@@ -1,0 +1,8 @@
+mutation updateClient($id: ID!){
+  updateClient(input: {id: $id, isActive: false}){
+    client{
+      id
+      isActive
+    }
+  }
+}

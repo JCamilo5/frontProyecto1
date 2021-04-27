@@ -1,0 +1,219 @@
+<template>
+  <div>
+    <nav class="navbar navbar-expand-lg navbar-dark bg-dark">
+      <a class="navbar-brand" href="#">
+        <img
+          class="logo"
+          alt="logo"
+          src="@/assets/logo.png"
+          width="80"
+          height="40"
+        />
+      </a>
+      <button
+        class="navbar-toggler"
+        type="button"
+        data-toggle="collapse"
+        data-target="#navbarSupportedContent"
+        aria-controls="navbarSupportedContent"
+        aria-expanded="false"
+        aria-label="Toggle navigation"
+      >
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="navbarSupportedContent">
+        <ul class="navbar-nav mr-auto">
+          <li class="nav-item active">
+            <a class="nav-link" href="#">
+              <router-link to="/">Establecimientos</router-link>
+              <span class="sr-only">(current)</span>
+            </a>
+          </li>
+        </ul>
+        <span class="navbar-text">
+          <a class="nav-link" href="#">
+            <router-link to="/example-list">CRUD</router-link>
+          </a>
+        </span>
+        <span v-show="ok" class="nav-item dropdown">
+          <a
+            class="nav-link dropdown-toggle"
+            data-toggle="dropdown"
+            href="#"
+            role="button"
+            aria-haspopup="true"
+            aria-expanded="false"
+            >Usuario</a
+          >
+
+          <div  class="dropdown-menu">
+            <div class="row-fluid user-infos cyruxx">
+              <div class="span10 offset1">
+                <div class="panel panel-primary">
+                  <center>
+                    <div class="panel-heading">
+                      <h3 class="panel-title">Usuario: Admin</h3>
+                    </div>
+                  </center>
+                  <div class="panel-body">
+                    <div class="row-fluid">
+                      <div class="span3">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          width="50"
+                          height="50"
+                          fill="currentColor"
+                          class="bi bi-person-badge-fill"
+                          viewBox="0 0 16 16"
+                        >
+                          <path
+                            d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm4.5 0a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3zM8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm5 2.755C12.146 12.825 10.623 12 8 12s-4.146.826-5 1.755V14a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-.245z"
+                          />
+                        </svg>
+                      </div>
+                      <div class="span6">
+                        <table
+                          class="table table-condensed table-responsive table-user-information"
+                        >
+                          <tbody>
+                            <tr>
+                              <td>Rol:</td>
+                              <td>example</td>
+                            </tr>
+                            <tr>
+                              <td>Correo:</td>
+                              <td>example@gmail.com</td>
+                            </tr>
+                          </tbody>
+                        </table>
+                      </div>
+                    </div>
+                  </div>
+                  <center class="botones">
+                    <span class="float-left">
+                      <button
+                        class="btn btn-warning"
+                        type="button"
+                        data-toggle="tooltip"
+                        @click="rectEditar()"
+                        data-original-title="Editar usuario"
+                      >
+                        <i class="icon-edit icon-white">Editar</i>
+                      </button>
+                    </span>
+                    <span class="float-right">
+                      <button
+                        class="btn btn-danger"
+                        type="button"
+                        data-toggle="tooltip"
+                        data-original-title="Darse de baja"
+                      >
+                        <i
+                          class="icon-remove icon-white"
+                          href="javascript:;"
+                          @click="removeClient()"
+                          >Darme de baja</i
+                        >
+                      </button>
+                    </span>
+                  </center>
+                </div>
+              </div>
+            </div>
+            <center>
+              <div class="dropdown-divider"></div>
+              <GoogleLogin :params="params" :onSuccess="onSuccess" :logoutButton="true"
+                >Cerrar sesión</GoogleLogin
+              >
+            </center>
+          </div>
+        </span>
+        <span v-show="!ok" class="navbar-text">
+          <a class="nav-link" href="#"
+            ><router-link to="/login">Inicio de sesión</router-link></a
+          >
+        </span>
+      </div>
+    </nav>
+    <div class="container">
+      <router-view />
+    </div>
+  </div>
+</template>
+<script>
+/**
+ * Barra de navegación común
+ */
+import GoogleLogin from "vue-google-login";
+export default {
+  name: "NavBar",
+  components: {
+    GoogleLogin,
+  },
+
+  data: () => ({
+    ok: localStorage.getItem('hayUser'),
+    isVisible: false,
+    // only needed if you want to render the button with the google ui
+    renderParams: {
+      width: 250,
+      height: 50,
+      longtitle: true,
+
+    },
+  }),
+  methods: {
+    rectEditar() {
+      this.$router.push({
+        name: "Editar",
+        params: { id: "VXNlck5vZGU6MQ==" },
+      });
+    },
+    actualizar(){
+      this.ok= localStorage.getItem('hayUser');
+    },
+    onSuccess() {
+      this.ok=false;
+      localStorage.clear();
+      this.$router.push({ name: "ExampleList" });
+    },
+    removeClient() {
+      if(confirm("¿Seguro que desea darse de baja?", false)){
+        this.$apollo
+        .mutate({
+          // Establece la mutación de editar
+          mutation: require("@/graphql/client/updateClient.gql"),
+          // Define las variables
+          variables: {
+            id: "VXNlck5vZGU6MQ==",
+          },
+        })
+        // El método mutate devuelve una promesa
+        // que puede usarse para agregar más logica
+        .then((response) => {
+          console.log("actualización de empresa:", response.data);
+          console.log("agrega aquí más lógica si es necesaria");
+        });
+      this.$router.push({ name: "ExampleList" });
+      }
+
+    },
+  },
+  mounted() {
+    window.addEventListener("google-loaded", this.renderGoogleLoginButton);
+    //window.addEventListener("@click","actualizar()");
+  },
+
+};
+
+</script>
+
+<style scoped>
+a:link {
+  text-decoration: none;
+}
+
+a:visited {
+  text-decoration: none;
+}
+</style>
