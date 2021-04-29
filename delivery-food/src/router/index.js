@@ -32,7 +32,7 @@ const routes = [
   {
     path: "/editar/:id",
     name: "Editar",
-    component: () => import("../views/user/Editar.vue"),
+    component: () => import("@/views/user/Editar.vue"),
   },
   {
     path: "/registrar",

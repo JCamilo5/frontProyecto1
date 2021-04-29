@@ -48,12 +48,20 @@ export default {
       contrasena: "",
       error: false,
       error_msg: "datos invalidos",
+      google: false,
       // only needed if you want to render the button with the google ui
        renderParams: {
          width: 250,
          height: 50,
-         longtitle: false
+         longtitle: true,
+         scope:'email',
+        theme: 'dark',
+
+
          },
+         id:"",
+         type:"",
+         names:"",
       usuario:{
         id:"",
         email:"",
@@ -69,11 +77,14 @@ export default {
   }),
   methods:{
     onSuccess(googleUser) {
-            console.log(googleUser);
-            this.correo = googleUser.ge
             // This only gets the user information: id, name, imageUrl and email
-            //TODOconsole.log(googleUser.getBasicProfile());
+            this.correo = googleUser.getBasicProfile().Rt;
+            this.google =  true;
+            this.iniciarSesion();
         },
+        onFailure(error) {
+      console.log(error);
+    },
     async iniciarSesion(){
        await this.$apollo
         .query({
@@ -91,31 +102,42 @@ export default {
           // En este caso se usa para cargar el formulario
           // con los datos obtenidos
           if(response.data.allUsers.edges[0]==null){
-              this.error_msg="Datos inválidos",
+            if(this.google){
+              this.error_msg="Usuario de google no registrado"
+              localStorage.clear();
+              this.google= false;
+              this.correo="";
+            }else{
+              this.error_msg="Datos inválidos"
+            }
               this.error=true
           }else{
+            console.log("Activo: ", response.data.allUsers.edges[0].node.isActive);
             if(response.data.allUsers.edges[0].node.isActive){
-              this.usuario.id = response.data.allUsers.edges[0].node.id;
-              this.usuario.email = response.data.allUsers.edges[0].node.email;
-              this.usuario.password = response.data.allUsers.edges[0].node.password;
-              this.usuario.isActive = response.data.allUsers.edges[0].node.isActive;
-              this.usuario.isSuperuser = response.data.allUsers.edges[0].node.isSuperuser;
-              this.usuario.type = response.data.allUsers.edges[0].node.type;
-              this.usuario.names = response.data.allUsers.edges[0].node.contact.edges[0].node.names;
-              this.usuario.lastnames = response.data.allUsers.edges[0].node.contact.edges[0].node.lastnames;
-              this.usuario.location = response.data.allUsers.edges[0].node.contact.edges[0].node.location;
-              this.usuario.telephone = response.data.allUsers.edges[0].node.contact.edges[0].node.telephone;
-              localStorage.setItem('user', this.usuario);
+              this.id = response.data.allUsers.edges[0].node.id;
+              // this.usuario.email = response.data.allUsers.edges[0].node.email;
+              // this.usuario.password = response.data.allUsers.edges[0].node.password;
+              // this.usuario.isActive = response.data.allUsers.edges[0].node.isActive;
+              // this.usuario.isSuperuser = response.data.allUsers.edges[0].node.isSuperuser;
+              this.type = response.data.allUsers.edges[0].node.type;
+              this.names = response.data.allUsers.edges[0].node.contact.edges[0].node.names;
+              // this.usuario.lastnames = response.data.allUsers.edges[0].node.contact.edges[0].node.lastnames;
+              // this.usuario.location = response.data.allUsers.edges[0].node.contact.edges[0].node.location;
+              // this.usuario.telephone = response.data.allUsers.edges[0].node.contact.edges[0].node.telephone;
+              localStorage.setItem('id', this.id);
+              localStorage.setItem('correo', this.correo);
+              localStorage.setItem('type', this.type);
+              localStorage.setItem('names', this.names);
               localStorage.setItem('hayUser', true);
+
               this.$router.push({ name: "ExampleList" });
             }else{
               this.error_msg="El usuario esta inactivo",
               this.error=true
             }
           }
-
     });
-    }
+    },
   }
 }
 </script>

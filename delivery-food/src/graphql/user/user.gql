@@ -2,11 +2,13 @@ query user($id: ID!) {
   user(id: $id) {
     id
     password
+    email
     contact{
       edges{
         node
         {
           names
+          lastnames
           location
           telephone
         }

@@ -35,24 +35,23 @@
             <router-link to="/example-list">CRUD</router-link>
           </a>
         </span>
-        <span v-show="ok" class="nav-item dropdown">
           <a
+          v-if="actualizar()"
             class="nav-link dropdown-toggle"
             data-toggle="dropdown"
-            href="#"
             role="button"
             aria-haspopup="true"
             aria-expanded="false"
             >Usuario</a
           >
 
-          <div  class="dropdown-menu">
+          <div  class="dropdown-menu dropdown-menu-right">
             <div class="row-fluid user-infos cyruxx">
               <div class="span10 offset1">
                 <div class="panel panel-primary">
                   <center>
                     <div class="panel-heading">
-                      <h3 class="panel-title">Usuario: Admin</h3>
+                      <h3 class="panel-title">Usuario: {{nombres}}</h3>
                     </div>
                   </center>
                   <div class="panel-body">
@@ -78,11 +77,11 @@
                           <tbody>
                             <tr>
                               <td>Rol:</td>
-                              <td>example</td>
+                              <td>{{rol}}</td>
                             </tr>
                             <tr>
                               <td>Correo:</td>
-                              <td>example@gmail.com</td>
+                              <td>{{correo}}</td>
                             </tr>
                           </tbody>
                         </table>
@@ -127,13 +126,11 @@
               >
             </center>
           </div>
-        </span>
         <span v-show="!ok" class="navbar-text">
-          <a class="nav-link" href="#"
-            ><router-link to="/login">Inicio de sesión</router-link></a
+          <a class="nav-link" href="/login" ><router-link to="/login">Inicio de sesión</router-link></a
           >
         </span>
-      </div>
+        </div>
     </nav>
     <div class="container">
       <router-view />
@@ -153,7 +150,11 @@ export default {
 
   data: () => ({
     ok: localStorage.getItem('hayUser'),
-    isVisible: false,
+    nombres:"",
+    rol:"",
+    correo:"",
+    id:"",
+
     // only needed if you want to render the button with the google ui
     renderParams: {
       width: 250,
@@ -166,11 +167,19 @@ export default {
     rectEditar() {
       this.$router.push({
         name: "Editar",
-        params: { id: "VXNlck5vZGU6MQ==" },
+        params: { id: this.id },
       });
     },
     actualizar(){
       this.ok= localStorage.getItem('hayUser');
+      if(this.ok){
+         this.id= localStorage.getItem('id');
+         this.correo= localStorage.getItem('correo');
+         this.nombres= localStorage.getItem('names');
+         this.rol= localStorage.getItem('type');
+        return true;
+      }
+      return false;
     },
     onSuccess() {
       this.ok=false;
@@ -182,10 +191,10 @@ export default {
         this.$apollo
         .mutate({
           // Establece la mutación de editar
-          mutation: require("@/graphql/client/updateClient.gql"),
+          mutation: require("@/graphql/client/deleteClient.gql"),
           // Define las variables
           variables: {
-            id: "VXNlck5vZGU6MQ==",
+            id: this.id,
           },
         })
         // El método mutate devuelve una promesa
@@ -201,9 +210,7 @@ export default {
   },
   mounted() {
     window.addEventListener("google-loaded", this.renderGoogleLoginButton);
-    //window.addEventListener("@click","actualizar()");
   },
-
 };
 
 </script>
