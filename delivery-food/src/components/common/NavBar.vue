@@ -37,30 +37,25 @@
         </span>
           <a
           v-if="actualizar()"
-            class="nav-link dropdown-toggle"
+            class="nav-link dropdown-toggle text-white"
             data-toggle="dropdown"
             role="button"
             aria-haspopup="true"
             aria-expanded="false"
             >Usuario</a
           >
-
           <div  class="dropdown-menu dropdown-menu-right">
             <div class="row-fluid user-infos cyruxx">
               <div class="span10 offset1">
                 <div class="panel panel-primary">
+
                   <center>
                     <div class="panel-heading">
-                      <h3 class="panel-title">Usuario: {{nombres}}</h3>
-                    </div>
-                  </center>
-                  <div class="panel-body">
-                    <div class="row-fluid">
-                      <div class="span3">
-                        <svg
+
+                      <h3 class="panel-title"><svg
                           xmlns="http://www.w3.org/2000/svg"
-                          width="50"
-                          height="50"
+                          width="28"
+                          height="28"
                           fill="currentColor"
                           class="bi bi-person-badge-fill"
                           viewBox="0 0 16 16"
@@ -68,7 +63,12 @@
                           <path
                             d="M2 2a2 2 0 0 1 2-2h8a2 2 0 0 1 2 2v12a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2V2zm4.5 0a.5.5 0 0 0 0 1h3a.5.5 0 0 0 0-1h-3zM8 11a3 3 0 1 0 0-6 3 3 0 0 0 0 6zm5 2.755C12.146 12.825 10.623 12 8 12s-4.146.826-5 1.755V14a1 1 0 0 0 1 1h8a1 1 0 0 0 1-1v-.245z"
                           />
-                        </svg>
+                        </svg>Usuario: {{nombres}}</h3>
+                    </div>
+                  </center>
+                  <div class="panel-body">
+                    <div class="row-fluid">
+                      <div class="span3">
                       </div>
                       <div class="span6">
                         <table
@@ -91,13 +91,13 @@
                   <center class="botones">
                     <span class="float-left">
                       <button
-                        class="btn btn-warning"
+                        class="btn btn-success"
                         type="button"
                         data-toggle="tooltip"
                         @click="rectEditar()"
                         data-original-title="Editar usuario"
                       >
-                        <i class="icon-edit icon-white">Editar</i>
+                        <i class="icon-edit icon-white">Editar usuario</i>
                       </button>
                     </span>
                     <span class="float-right">
@@ -121,9 +121,7 @@
             </div>
             <center>
               <div class="dropdown-divider"></div>
-              <GoogleLogin :params="params" :onSuccess="onSuccess" :logoutButton="true"
-                >Cerrar sesión</GoogleLogin
-              >
+              <GoogleLogin class="btn btn-warning" :params="params" :renderParams="renderParams" :onSuccess="onSuccess" :logoutButton="true">Cerrar sesión</GoogleLogin>
             </center>
           </div>
         <span v-show="!ok" class="navbar-text">
@@ -187,7 +185,7 @@ export default {
       this.$router.push({ name: "ExampleList" });
     },
     removeClient() {
-      if(confirm("¿Seguro que desea darse de baja?", false)){
+      if(confirm("¿Seguro que desea darse de baja?")){
         this.$apollo
         .mutate({
           // Establece la mutación de editar
@@ -212,9 +210,7 @@ export default {
     window.addEventListener("google-loaded", this.renderGoogleLoginButton);
   },
 };
-
 </script>
-
 <style scoped>
 a:link {
   text-decoration: none;

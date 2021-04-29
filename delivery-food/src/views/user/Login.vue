@@ -25,7 +25,8 @@
                 <div id="formFooter">
                   <a class="underlineHover" href="#">¿Ha olvidado la contraseña?</a>
                 </div>
-                 <GoogleLogin :params="params" :renderParams="renderParams" :onSuccess="onSuccess" :onFailure="onFailure"></GoogleLogin>
+                 <GoogleLogin class="buttonText" :params="params" :onSuccess="onSuccess" :onFailure="onFailure">Iniciar sesión</GoogleLogin>
+                 <br>
                 <a>Crear usuario</a>
                <form v-on:submit.prevent="login">
                   <input type="submit" class="fadeIn fourth" @click="$router.push('/Registrar')" value="Registrar">
@@ -138,12 +139,41 @@ export default {
           }
     });
     },
+  },
+   mounted() {
+    if(localStorage.getItem('hayUser')){
+      this.$router.push({ name: "ExampleList" });
+    }
   }
 }
+
 </script>
 
 
 <style scoped>
+    .buttonText:hover {
+      cursor: pointer;
+    }
+    .buttonText {
+      display: inline-block;
+      vertical-align: middle;
+      padding-left: 42px;
+      padding-right: 15px;
+      font-size: 22px;
+      font-weight: lighter;
+      /* Use the Roboto font that is loaded in the <head> */
+      font-family: 'Roboto', sans-serif;
+
+      background: url('https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg') transparent 5px 50% no-repeat;
+      color: #444;
+      width: 250;
+      border-radius: 5px;
+      border: thin solid #888;
+      box-shadow: 1px 1px 1px grey;
+      white-space: nowrap;
+    }
+
+
 /* BASIC */
 html {
   background-color: #56baed;

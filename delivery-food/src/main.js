@@ -14,7 +14,7 @@ Vue.filter("capitalize", function (value) {
   return value.charAt(0).toUpperCase() + value.slice(1);
 });
 Vue.use(LoaderPlugin, {
-  client_id: "588145504123-1m52mg56815cv0o5u64jbbrks2t99s8d"
+  client_id: "588145504123-1m52mg56815cv0o5u64jbbrks2t99s8d.apps.googleusercontent.com"
 });
 new Vue({
   router,

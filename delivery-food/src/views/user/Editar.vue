@@ -177,6 +177,9 @@ export default {
   },
   async mounted() {
     console.log("id en el formulario", this.id);
+    if(null === localStorage.getItem('hayUser') || false === localStorage.getItem('hayUser')){
+      this.$router.push({ name: "ExampleList" });
+    }else{
     if (this.id) {
       await this.$apollo
         .query({
@@ -193,9 +196,9 @@ export default {
           this.contrasena = response.data.user.password;
         });
     }
+    }
   },
   methods: {
-
     async editContact() {
       await this.$apollo
         .mutate({
@@ -218,7 +221,6 @@ export default {
             },
           },
         ],
-
         })
         // El método mutate devuelve una promesa
         // que puede usarse para agregar más logica
@@ -248,7 +250,6 @@ export default {
             },
           },
         ],
-
         })
         // El método mutate devuelve una promesa
         // que puede usarse para agregar más logica
@@ -258,23 +259,17 @@ export default {
         });
     },
   comprobarPassword(){
-
      if(this.contrasena == this.contrasenaA){
       if(this.contrasenaN == this.contrasenaC){
           this.editPassword()
       }else{
-        console.log("no coincide las contrasenias nuevas")
+        console.log("Mo coincide las contrasenias nuevas")
       }
     }else{
-
         console.log("No coinciden la contrasenia antigua")
     }
   },
-
 },
-
-
-
   /**
    * Ciclo de vida del componente
    * donde obtiene el parametro id pasado por la url
@@ -282,7 +277,5 @@ export default {
   created() {
     this.id = this.$route.params.id;
   },
-
-
 };
 </script>
