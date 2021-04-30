@@ -87,6 +87,7 @@ export default {
       console.log(error);
     },
     async iniciarSesion(){
+      console.log("iniciando sesion");
        await this.$apollo
         .query({
           // Establece la consulta para recuperar la empresa
@@ -137,7 +138,8 @@ export default {
               this.error=true
             }
           }
-    });
+    },
+    );
     },
   },
    mounted() {

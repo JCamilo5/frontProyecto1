@@ -14,5 +14,8 @@ export default {
     NavBar,
     Footer,
   },
+ mounted(){
+   this.$forceupdate();
+ }
 };
 </script>

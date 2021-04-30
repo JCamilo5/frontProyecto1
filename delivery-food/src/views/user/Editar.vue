@@ -244,10 +244,11 @@ export default {
           // Actualiza el cache de GraphQL para visualizar la eliminación
         // al momento de cargar la vista
         refetchQueries: [
-          { query: require("@/graphql/user/user.gql"),
+          { query: require("@/graphql/user/allUsers.gql"),
             variables:{
               id: this.id
             },
+
           },
         ],
         })
