@@ -256,6 +256,7 @@ export default {
         .then((response) => {
           console.log("actualización de contrasenia:", response.data);
           this.contrasena=this.contrasenaN;
+          this.$forceUpdate;
         });
     },
   comprobarPassword(){
