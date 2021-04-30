@@ -183,6 +183,7 @@ export default {
       this.ok=false;
       localStorage.clear();
       this.$router.push({ name: "ExampleList" });
+      this.$forceUpdate;
     },
     removeClient() {
       if(confirm("¿Seguro que desea darse de baja?")){
