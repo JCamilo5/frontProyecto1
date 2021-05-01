@@ -84,8 +84,11 @@ export default {
         bandera: false,
        nombre: "",
        correo: "",
-  //     password: "",
-  //     passwordC: "",
+       telefono:"",
+       password: "",
+       passwordC: "",
+       params: {
+        },
      };
   },
   methods: {

@@ -24,7 +24,7 @@
         <input
             type="text"
             class="form-control"
-            id="validationNombre"
+            id="validationNom"
             v-model="apellido"
             required
           />
@@ -119,7 +119,7 @@
                   >
                   <input
                     type="password"
-                    id="inputPasswordM"
+                    id="inputPasswordMo"
                     class="form-control"
                     aria-describedby="passwordHelpBlock"
                     required
