@@ -1,8 +1,6 @@
 <template>
   <div>
-    <nav
-      class="navbar navbar-expand-lg nav-bar static-top nav-background"
-    >
+    <nav class="navbar navbar-expand-lg nav-bar fixed-top static-top navbar-bg">
       <div class="container-fluid">
         <a class="navbar-brand" href="#">
           <img class="logo" src="@/assets/logo.png" alt="" />
@@ -12,45 +10,30 @@
           class="navbar-toggler"
           type="button"
           data-toggle="collapse"
-          data-target="#navbarResponsive"
-          aria-controls="navbarResponsive"
+          data-target="#navbarSupportedContent"
+          aria-controls="navbarSupportedContent"
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <span class="navbar-toggler-icon"> </span>
+          <b-icon icon="three-dots-vertical"></b-icon>
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
-            <li class="nav-item active">
-              <a href="" class="nav-link">
-                <router-link class="font-orange" to="/"
-                  >Establecimientos</router-link
-                >
-              </a>
-            </li>
-            <li class="nav-item active">
-              <a href="" class="nav-link">
-                <router-link class="font-orange" to="/example-list"
-                  >CRUD</router-link
-                >
-              </a>
-            </li>
 
-            <li class="nav-item active">
+            <li class="nav-item mr-3">
               <a class="nav-link font-gray" href="#"
                 >Inicio
                 <span class="sr-only">(current)</span>
               </a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item mr-3">
               <a class="nav-link font-gray" href="#">Nosotros</a>
             </li>
-            <li class="nav-item">
+            <li class="nav-item mr-3">
               <a class="nav-link font-gray" href="#">Servicios</a>
             </li>
-            <li class="nav-item active">
-              <a href="" class="nav-link font-white"> </a>
-              <i class="vertical-line justify-content-center"></i>
+            <li class="nav-item mr-3">
+              <span class="nav-link separator" href="#">|</span>
             </li>
 
             <li class="nav-item">
@@ -149,23 +132,15 @@
                 </center>
               </div>
             </li>
-
-            <li class="nav-item active">
-              <span v-show="!ok">
-                <a href="" class="nav-link">
-                <router-link class="font-orange" to="/login"
-                  ><strong>Iniciar Sesión</strong></router-link
-                >
-              </a>
-              </span>
+            <li class="nav-item">
+              <a class="nav-link navbar-orange-text font-weight-bold login" href="login"
+                ><strong>Iniciar Sesión</strong></a
+              >
             </li>
           </ul>
         </div>
       </div>
     </nav>
-    <div class="container">
-      <router-view />
-    </div>
   </div>
 </template>
 <script>
@@ -232,45 +207,39 @@ export default {
       }
     },
   },
-  mounted() {
-    window.addEventListener("google-loaded", this.renderGoogleLoginButton);
-  },
 };
 </script>
 <style scoped>
+a { color: var(--grey); }
+
+a:hover {
+    color: var(--grey-hover);
+    text-decoration: none;
+}
 a:link,
 a:visited,
 a:active {
   text-decoration: none;
 }
-.nav-background {
-  background-color: black;
+.login:hover{
+  color:var(--primary-x);
 }
+
 .logo {
   width: 30%;
   height: 80%;
 }
-.font-orange {
-  color: rgba(255, 68, 0, 0.877) !important;
+.separator{
+  color:var(--grey);
 }
-.font-white {
-  color: rgb(209, 203, 203) !important;
+.navbar-bg{
+    background-color: var(--dark-x);
 }
-.font-gray {
-  color: rgba(153, 151, 151, 0.836) !important;
+
+.navbar-orange-text{
+    color:var(--orange)
 }
-.font-orange:hover {
-  text-decoration: none;
-}
-.vertical-line {
-  bottom: 20px;
-  margin-left: 0.5em;
-  padding-bottom: 10px;
-  position: absolute;
-  z-index: 10;
-  width: 2px;
-  height: 2em;
-  border-left: thick-solid;
-  background: grey;
+.navbar{
+  min-height: var(--height-navbar);
 }
 </style>

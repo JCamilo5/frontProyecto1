@@ -39,7 +39,31 @@ const routes = [
     name: "Registrar",
     component: () => import("../views/user/Registrar.vue"),
   },
-
+  {
+    path: "/geolocation",
+    name: "Geolocation",
+    component: () => import("@/components/geolocation/Geolocation.vue"),
+  },
+  {
+    path: "/orders",
+    name: "OrdersPlaced",
+    component: () => import("@/views/deliveries/OrdersPlaced.vue"),
+  },
+  {
+    path: "/pending-orders",
+    name: "PendingOrders",
+    component: () => import("@/views/deliveries/PendingOrders.vue"),
+  },
+  {
+    path: "/report",
+    name: "Report",
+    component: () => import("@/views/deliveries/Report.vue"),
+  },
+  {
+    path: "/countdown",
+    name: "Countdown",
+    component: () => import("@/views/deliveries/Countdown.vue"),
+  },
 ];
 
 const router = new VueRouter({
