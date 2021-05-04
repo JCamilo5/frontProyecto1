@@ -73,12 +73,7 @@ export default {
     error_msg: "datos invalidos",
     google: false,
     alert: true,
-    tipo: "info",
-    elapse: null,
     // only needed if you want to render the button with the google ui
-    id: "",
-    type: "",
-    names: "",
     params: {},
     usuario: {
       id: "",
@@ -113,6 +108,11 @@ export default {
     },
     async iniciarSesion() {
       console.log("iniciando sesion");
+      if(!this.google && this.contrasena == ""){
+        this.error_msg = "Datos incorrectos";
+        this.error=true;
+        return false;
+      }
       await this.$apollo
         .query({
           // Establece la consulta para recuperar la empresa
@@ -144,28 +144,24 @@ export default {
               response.data.allUsers.edges[0].node.isActive
             );
             if (response.data.allUsers.edges[0].node.isActive) {
-              this.id = response.data.allUsers.edges[0].node.id;
-              // this.usuario.email = response.data.allUsers.edges[0].node.email;
+              this.usuario.id = response.data.allUsers.edges[0].node.id;
+              this.usuario.email = response.data.allUsers.edges[0].node.email;
               // this.usuario.password = response.data.allUsers.edges[0].node.password;
               // this.usuario.isActive = response.data.allUsers.edges[0].node.isActive;
               // this.usuario.isSuperuser = response.data.allUsers.edges[0].node.isSuperuser;
-              this.type = response.data.allUsers.edges[0].node.type;
-              this.names =
-                response.data.allUsers.edges[0].node.contact.edges[0].node.names;
+              this.usuario.type = response.data.allUsers.edges[0].node.type;
+              this.usuario.names = response.data.allUsers.edges[0].node.contact.edges[0].node.names;
               // this.usuario.lastnames = response.data.allUsers.edges[0].node.contact.edges[0].node.lastnames;
               // this.usuario.location = response.data.allUsers.edges[0].node.contact.edges[0].node.location;
               // this.usuario.telephone = response.data.allUsers.edges[0].node.contact.edges[0].node.telephone;
-              localStorage.setItem("id", this.id);
-              localStorage.setItem("correo", this.correo);
-              localStorage.setItem("type", this.type);
-              localStorage.setItem("names", this.names);
+              localStorage.setItem("user", JSON.stringify(this.usuario));
               localStorage.setItem("hayUser", true);
 
               this.$router.push({ name: "ExampleList" }).then(() => {
                 this.makeToast(
                   "success",
                   "Bienvenido",
-                  "Usuario: " + this.names,
+                  "Usuario: " + this.usuario.names,
                   3000
                 );
               });
@@ -209,7 +205,7 @@ export default {
 }
 /* BASIC */
 html {
-  background-color: orange;
+  background-color: #FF6079;
 }
 body {
   font-family: "Poppins", sans-serif;
@@ -267,13 +263,13 @@ h2.inactive {
 }
 h2.active {
   color: #0d0d0d;
-  border-bottom: 2px solid orange;
+  border-bottom: 2px solid #FF6079;
 }
 /* FORM TYPOGRAPHY*/
 input[type="button"],
 input[type="submit"],
 input[type="reset"] {
-  background-color: orange;
+  background-color: #FF6079;
   border: none;
   color: white;
   padding: 15px 80px;
@@ -296,7 +292,7 @@ input[type="reset"] {
 input[type="button"]:hover,
 input[type="submit"]:hover,
 input[type="reset"]:hover {
-  background-color: orange;
+  background-color: #FF6079;
 }
 input[type="button"]:active,
 input[type="submit"]:active,
@@ -329,7 +325,7 @@ input {
 }
 input:focus {
   background-color: #fff;
-  border-bottom: 2px solid orange;
+  border-bottom: 2px solid #FF6079;
 }
 input:placeholder {
   color: #cccccc;
@@ -432,7 +428,7 @@ input:placeholder {
   bottom: -10px;
   width: 0;
   height: 2px;
-  background-color: orange;
+  background-color: #FF6079;
   content: "";
   transition: width 0.2s;
 }

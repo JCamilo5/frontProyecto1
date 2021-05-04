@@ -7,17 +7,17 @@
         </a>
 
         <button
-          class="navbar-toggler"
+          class="navbar-toggler custom-toggler"
           type="button"
           data-toggle="collapse"
-          data-target="#navbarSupportedContent"
-          aria-controls="navbarSupportedContent"
+          data-target="#navbarNavDropdown"
+          aria-controls="navbarNavDropdown"
           aria-expanded="false"
           aria-label="Toggle navigation"
         >
-          <b-icon icon="three-dots-vertical"></b-icon>
+          <span class="navbar-toggler-icon"></span>
         </button>
-        <div class="collapse navbar-collapse" id="navbarResponsive">
+        <div class="collapse navbar-collapse" id="navbarNavDropdown">
           <ul class="navbar-nav ml-auto">
             <li class="nav-item mr-3">
               <a class="nav-link font-gray" href="#"
@@ -184,10 +184,11 @@ export default {
     actualizar() {
       this.ok = localStorage.getItem("hayUser");
       if (this.ok) {
-        this.id = localStorage.getItem("id");
-        this.correo = localStorage.getItem("correo");
-        this.nombres = localStorage.getItem("names");
-        this.rol = localStorage.getItem("type");
+        let user = JSON.parse(localStorage.getItem('user'));
+        this.id = user.id;
+        this.correo = user.email;
+        this.nombres = user.names;
+        this.rol = user.type;
         return true;
       }
       return false;
@@ -202,7 +203,7 @@ export default {
         this.$apollo
           .mutate({
             // Establece la mutación de editar
-            mutation: require("@/graphql/client/deleteClient.gql"),
+            mutation: require("@/graphql/client/desactivateClient.gql"),
             // Define las variables
             variables: {
               id: this.id,
@@ -263,5 +264,11 @@ a:active {
 }
 .navbar {
   min-height: var(--height-navbar);
+}
+.custom-toggler.navbar-toggler {
+  border-color: rgb(255, 68, 0, 0.877);
+}
+.custom-toggler .navbar-toggler-icon {
+  background-image: url("data:image/svg+xml;charset=utf8,%3Csvg viewBox='0 0 32 32' xmlns='http://www.w3.org/2000/svg'%3E%3Cpath stroke='rgba(255, 68, 0, 0.877)' stroke-width='2' stroke-linecap='round' stroke-miterlimit='10' d='M4 8h24M4 16h24M4 24h24'/%3E%3C/svg%3E");
 }
 </style>

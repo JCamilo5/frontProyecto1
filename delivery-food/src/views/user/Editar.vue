@@ -285,10 +285,20 @@ export default {
       if(this.contrasenaN == this.contrasenaC){
           this.editPassword()
       }else{
-        console.log("Mo coincide las contrasenias nuevas")
+        this.makeToast(
+                  "danger",
+                  "Contraseñas",
+                  "No coincide las contraseñas nuevas",
+                  3000
+                );
       }
     }else{
-        console.log("No coinciden la contrasenia antigua")
+      this.makeToast(
+                  "danger",
+                  "Contraseña",
+                  "No coinciden la contraseña antigua",
+                  3000
+                );
     }
   },
 },
