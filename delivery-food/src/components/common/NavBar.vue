@@ -19,7 +19,6 @@
         </button>
         <div class="collapse navbar-collapse" id="navbarResponsive">
           <ul class="navbar-nav ml-auto">
-
             <li class="nav-item mr-3">
               <a class="nav-link font-gray" href="#"
                 >Inicio
@@ -106,12 +105,11 @@
                             class="btn btn-danger"
                             type="button"
                             data-toggle="tooltip"
+                            @click="removeClient()"
                             data-original-title="Darse de baja"
                           >
                             <i
                               class="icon-remove icon-white"
-                              href="javascript:;"
-                              @click="removeClient()"
                               >Darme de baja</i
                             >
                           </button>
@@ -132,8 +130,10 @@
                 </center>
               </div>
             </li>
-            <li class="nav-item">
-              <a class="nav-link navbar-orange-text font-weight-bold login" href="login"
+            <li v-show="!ok" class="nav-item">
+              <a
+                class="nav-link navbar-orange-text font-weight-bold login"
+                href="login"
                 ><strong>Iniciar Sesión</strong></a
               >
             </li>
@@ -141,6 +141,9 @@
         </div>
       </div>
     </nav>
+    <div class="container container-general">
+      <router-view />
+    </div>
   </div>
 </template>
 <script>
@@ -164,6 +167,14 @@ export default {
     // only needed if you want to render the button with the google ui
   }),
   methods: {
+    makeToast(variant = null, title, info, tiempo) {
+      this.$bvToast.toast(info, {
+        title: title,
+        autoHideDelay: tiempo,
+        variant: variant,
+        solid: true,
+      });
+    },
     rectEditar() {
       this.$router.push({
         name: "Editar",
@@ -202,44 +213,55 @@ export default {
           .then((response) => {
             console.log("actualización de empresa:", response.data);
             console.log("agrega aquí más lógica si es necesaria");
+             this.makeToast(
+            "danger",
+            "Desactivado",
+            "Usuario: " + this.nombres+" ha sido desactivado",
+            3000
+          );
+          this.ok = false;
+          localStorage.clear();
+          this.$router.push({ name: "ExampleList" });
           });
-        this.$router.push({ name: "ExampleList" });
+
       }
     },
   },
 };
 </script>
 <style scoped>
-a { color: var(--grey); }
+a {
+  color: var(--grey);
+}
 
 a:hover {
-    color: var(--grey-hover);
-    text-decoration: none;
+  color: var(--grey-hover);
+  text-decoration: none;
 }
 a:link,
 a:visited,
 a:active {
   text-decoration: none;
 }
-.login:hover{
-  color:var(--primary-x);
+.login:hover {
+  color: var(--primary-x);
 }
 
 .logo {
   width: 30%;
   height: 80%;
 }
-.separator{
-  color:var(--grey);
+.separator {
+  color: var(--grey);
 }
-.navbar-bg{
-    background-color: var(--dark-x);
+.navbar-bg {
+  background-color: var(--dark-x);
 }
 
-.navbar-orange-text{
-    color:var(--orange)
+.navbar-orange-text {
+  color: var(--orange);
 }
-.navbar{
+.navbar {
   min-height: var(--height-navbar);
 }
 </style>

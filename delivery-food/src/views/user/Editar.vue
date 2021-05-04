@@ -199,6 +199,14 @@ export default {
     }
   },
   methods: {
+    makeToast(variant = null, title, info, tiempo) {
+      this.$bvToast.toast(info, {
+        title: title,
+        autoHideDelay: tiempo,
+        variant: variant,
+        solid: true,
+      });
+    },
     async editContact() {
       await this.$apollo
         .mutate({
@@ -227,9 +235,16 @@ export default {
         .then((response) => {
           localStorage.setItem('names', this.nombre);
           console.log("actualización de contacto:", response.data);
+           this.$router.push({ name: "ExampleList" }).then(() => {
+                this.makeToast(
+                  "success",
+                  "Actualizado",
+                  "La información de usuario ha sido actualizada",
+                  3000
+                );
+              });
 
         });
-      this.$router.push({ name: "ExampleList" });
     },
       async editPassword() {
       await this.$apollo
@@ -257,7 +272,12 @@ export default {
         .then((response) => {
           console.log("actualización de contrasenia:", response.data);
           this.contrasena=this.contrasenaN;
-          this.$forceUpdate;
+          this.makeToast(
+                  "success",
+                  "Actualizada",
+                  "La contraseña ha sido actualizada",
+                  3000
+                );
         });
     },
   comprobarPassword(){

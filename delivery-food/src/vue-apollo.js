@@ -11,10 +11,8 @@ Vue.use(VueApollo);
 // Name of the localStorage item
 const AUTH_TOKEN = "apollo-token";
 
-// Http endpoint
 //const httpEndpoint = "https://gastronomic-app.herokuapp.com/graphql/";
-const httpEndpoint =
-  process.env.VUE_APP_GRAPHQL_HTTP || "http://localhost:8000/graphql/";
+const httpEndpoint =  process.env.VUE_APP_GRAPHQL_HTTP || "http://localhost:8000/graphql/";
 
 // Config
 const defaultOptions = {
