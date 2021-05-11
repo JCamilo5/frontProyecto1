@@ -64,6 +64,16 @@ const routes = [
     name: "Countdown",
     component: () => import("@/views/deliveries/Countdown.vue"),
   },
+  {
+    path: "/password",
+    name: "Password",
+    component: () => import("@/views/user/Password.vue"),
+  },
+  {
+    path: "/password/reset",
+    name: "Reset",
+     component: () => import("@/views/user/Reset.vue")
+  },
 ];
 
 const router = new VueRouter({
