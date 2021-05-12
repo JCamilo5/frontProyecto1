@@ -1,25 +1,11 @@
 <template>
   <div>
-    <b-form @submit="onSubmit" @reset="onReset" v-if="show">
-      <b-form-group
-        id="input-group-1"
-        label-for="input-1"
-        description="No se si va el email."
-      >Email:<span class="text-danger">*</span>
-        <b-form-input
-          id="input-1"
-          v-model="form.email"
-          type="email"
-          placeholder="Email"
-          required
-        ></b-form-input>
-      </b-form-group>
-
+    <b-form v-on:submit.prevent="editPassword()" v-if="show">
       <b-form-group id="input-group-2" label-for="input-2">Nueva contraseña:
         <span class="text-danger">*</span>
         <b-form-input
           id="input-2"
-          v-model="form.name"
+          v-model="contrasena"
           placeholder="********"
           required
           type="password"
@@ -30,7 +16,7 @@
         <span class="text-danger">*</span>
         <b-form-input
           id="input-3"
-          v-model="form.name"
+          v-model="contrasenaN"
           placeholder="********"
           required
           type="password"
@@ -46,34 +32,60 @@
   export default {
     data() {
       return {
-        form: {
-          email: '',
-          name: '',
-          food: null,
-          checked: []
-        },
-        foods: [{ text: 'Select One', value: null }, 'Carrots', 'Beans', 'Tomatoes', 'Corn'],
+        id:"",
+        contrasenaN:"",
+        contrasena:"",
         show: true
       }
     },
     methods: {
-      onSubmit(event) {
-        event.preventDefault()
-        alert(JSON.stringify(this.form))
-      },
-      onReset(event) {
-        event.preventDefault()
-        // Reset our form values
-        this.form.email = ''
-        this.form.name = ''
-        this.form.food = null
-        this.form.checked = []
-        // Trick to reset/clear native browser form validation state
-        this.show = false
-        this.$nextTick(() => {
-          this.show = true
+      makeToast(variant = null, title, info, tiempo) {
+      this.$bvToast.toast(info, {
+        title: title,
+        autoHideDelay: tiempo,
+        variant: variant,
+        solid: true,
+      });
+    },
+       async editPassword() {
+      await this.$apollo
+        .mutate({
+          // Establece la mutación de editar
+          mutation: require("@/graphql/client/updateClient.gql"),
+          // Define las variables
+          variables: {
+            id: this.id,
+            password : this.contrasenaN,
+          },
+          // Actualiza el cache de GraphQL para visualizar la eliminación
+        // al momento de cargar la vista
+        refetchQueries: [
+          { query: require("@/graphql/user/allUsers.gql"),
+            variables:{
+              id: this.id
+            },
+
+          },
+        ],
         })
-      }
-    }
+        // El método mutate devuelve una promesa
+        // que puede usarse para agregar más logica
+        .then((response) => {
+          console.log("actualización de contrasenia:", response.data);
+          this.contrasena=this.contrasenaN;
+          this.makeToast(
+                  "success",
+                  "Actualizada",
+                  "La contraseña ha sido actualizada",
+                  3000
+                );
+        });
+    },
+    },
+    created() {
+    this.id = this.$route.params.id;
+    this.id = this.id+"="
+    console.log("Id: ",this.id)
+  },
   }
 </script>
