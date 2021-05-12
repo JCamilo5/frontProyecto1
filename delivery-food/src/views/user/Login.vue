@@ -40,7 +40,7 @@
         </div>
 
         <div id="formFooter">
-          <a class="underlineHover" href="/Password">¿Ha olvidado la contraseña?</a>
+          <a class="underlineHover"  @click="$router.push('/password')" >¿Ha olvidado la contraseña?</a>
         </div>
 
         <GoogleLogin
