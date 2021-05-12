@@ -18,6 +18,8 @@
             name="login"
             placeholder="Correo Electronico"
             v-model="correo"
+            required=""
+            autofocus=""
           />
           <input
             type="password"
@@ -26,6 +28,8 @@
             name="login"
             placeholder="Contraseña"
             v-model="contrasena"
+            value=""
+            required=""
           />
           <input type="submit" class="fadeIn fourth" value="Iniciar sesión" />
         </form>
@@ -36,8 +40,9 @@
         </div>
 
         <div id="formFooter">
-          <a class="underlineHover" href="#">¿Ha olvidado la contraseña?</a>
+          <a class="underlineHover"  @click="$router.push('/password')" >¿Ha olvidado la contraseña?</a>
         </div>
+
         <GoogleLogin
           class="buttonText"
           :params="params"
