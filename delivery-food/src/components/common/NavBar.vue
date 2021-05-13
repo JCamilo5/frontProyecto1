@@ -133,7 +133,7 @@
             <li v-show="!ok" class="nav-item">
               <a
                 class="nav-link navbar-orange-text font-weight-bold login"
-                href="login"
+                href="/login"
                 ><strong>Iniciar Sesión</strong></a
               >
             </li>
