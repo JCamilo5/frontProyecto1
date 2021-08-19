@@ -6,6 +6,7 @@ query alluser($email: String, $password: String){
         email
         password
         isActive
+        isAlternative
         isSuperuser
         type
         contact{

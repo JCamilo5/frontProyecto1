@@ -101,8 +101,10 @@ export default {
           telephone: this.telefono,
           email: this.correo,
           password: this.password,
+          is_alternative: true,
           lastnames: "dfdfdf",
           location: "dddddd",
+
         },
       });
       this.$router.push({ name: "login" });

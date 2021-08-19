@@ -86,6 +86,7 @@ export default {
       password: "",
       isActive: "",
       isSuperuser: "",
+      isalternative: "",
       names: "",
       lastnames: "",
       location: "",
@@ -151,6 +152,7 @@ export default {
             if (response.data.allUsers.edges[0].node.isActive) {
               this.usuario.id = response.data.allUsers.edges[0].node.id;
               this.usuario.email = response.data.allUsers.edges[0].node.email;
+              //this.usuario.isalternative =  response.data.allUsers.edges[0].node.isalternative;
               // this.usuario.password = response.data.allUsers.edges[0].node.password;
               // this.usuario.isActive = response.data.allUsers.edges[0].node.isActive;
               // this.usuario.isSuperuser = response.data.allUsers.edges[0].node.isSuperuser;

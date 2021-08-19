@@ -62,12 +62,9 @@
           />
           </div>
           <div class="invalid-feedback">
-            Es necesario escribir la telefono.
+            Es necesario escribir el telefono.
           </div>
-
         </div>
-
-
       </form>
       <button class="btn btn-primary fadeIn third"
           @click="editContact()"
@@ -75,7 +72,7 @@
 
 
          <button
-          v-if="contrasena !== null"
+          :disabled ="deshabilitar()"
           type="button"
           class="btn btn-primary"
           data-toggle="modal"
@@ -173,6 +170,7 @@ export default {
       contrasenaN: "",
       contrasenaC: "",
       id: "",
+      is_alternative:"",
       idAux: "",
     };
   },
@@ -194,6 +192,9 @@ export default {
           this.apellido = response.data.user.contact.edges[0].node.lastnames;
           this.localizacion = response.data.user.contact.edges[0].node.location;
           this.telefono = response.data.user.contact.edges[0].node.telephone;
+          this.is_alternative = response.data.user.isAlternative;
+          console.log("1 es google:", response.data.user.isAlternative);
+
           this.contrasena = response.data.user.password;
           this.idAux =response.data.user.contact.edges[0].node.id;
         });
@@ -224,7 +225,7 @@ export default {
           },
           // Actualiza el cache de GraphQL para visualizar la eliminación
         // al momento de cargar la vista
-        refetchQueries: [
+        refetchQueries: [ 
           { query: require("@/graphql/user/user.gql"),
             variables:{
               id: this.id
@@ -286,6 +287,11 @@ export default {
                 );
         });
     },
+    
+  deshabilitar(){
+      console.log("quitar:", this.is_alternative);
+      return this.is_alternative;
+  },
   comprobarPassword(){
      if(this.contrasena == this.contrasenaA){
       if(this.contrasenaN == this.contrasenaC){
