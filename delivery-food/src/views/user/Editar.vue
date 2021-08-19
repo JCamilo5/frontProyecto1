@@ -173,6 +173,7 @@ export default {
       contrasenaN: "",
       contrasenaC: "",
       id: "",
+      idAux: "",
     };
   },
   async mounted() {
@@ -194,6 +195,7 @@ export default {
           this.localizacion = response.data.user.contact.edges[0].node.location;
           this.telefono = response.data.user.contact.edges[0].node.telephone;
           this.contrasena = response.data.user.password;
+          this.idAux =response.data.user.contact.edges[0].node.id;
         });
     }
     }
@@ -214,7 +216,7 @@ export default {
           mutation: require("@/graphql/client/updateContact.gql"),
           // Define las variables
           variables: {
-            id: this.id,
+            id: this.idAux,
             names: this.nombre,
             lastnames :  this.apellido,
             location : this.localizacion,
@@ -233,8 +235,12 @@ export default {
         // El método mutate devuelve una promesa
         // que puede usarse para agregar más logica
         .then((response) => {
-          localStorage.setItem('names', this.nombre);
+          //localStorage.setItem('names', this.nombre);
           console.log("actualización de contacto:", response.data);
+          //Llenar cache
+        let user = JSON.parse(localStorage.getItem('user'));
+        user.names = this.nombre;
+        localStorage.setItem("user", JSON.stringify(user));
            this.$router.push({ name: "ExampleList" }).then(() => {
                 this.makeToast(
                   "success",

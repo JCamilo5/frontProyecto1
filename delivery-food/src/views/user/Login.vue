@@ -104,7 +104,7 @@ export default {
     },
     onSuccess(googleUser) {
       // This only gets the user information: id, name, imageUrl and email
-      this.correo = googleUser.getBasicProfile().Rt;
+      this.correo = googleUser.getBasicProfile().Et;
       this.google = true;
       this.iniciarSesion();
     },
@@ -135,7 +135,7 @@ export default {
           // con los datos obtenidos
           if (response.data.allUsers.edges[0] == null) {
             if (this.google) {
-              this.error_msg = "Usuario de google no registrado";
+              this.error_msg = "Usuario de Google no registrado";
               localStorage.clear();
               this.google = false;
               this.correo = "";

@@ -8,6 +8,7 @@ query user($id: ID!) {
         node
         {
           names
+          id
           lastnames
           location
           telephone
