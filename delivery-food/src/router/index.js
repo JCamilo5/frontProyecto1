@@ -74,6 +74,11 @@ const routes = [
     name: "Reset",
      component: () => import("@/views/user/Reset.vue")
   },
+  {
+    path: "/RegisterPassword",
+    name: "RegisterPassword",
+    component: () => import("@/views/user/RegisterPassword.vue"),
+  },
 ];
 
 const router = new VueRouter({

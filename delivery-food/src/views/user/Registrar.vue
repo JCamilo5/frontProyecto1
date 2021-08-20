@@ -101,10 +101,9 @@ export default {
           telephone: this.telefono,
           email: this.correo,
           password: this.password,
-          is_alternative: true,
-          lastnames: "dfdfdf",
-          location: "dddddd",
-
+          is_alternative: false,
+          lastnames: "",
+          location: "Popayan",
         },
       });
       this.$router.push({ name: "login" });
@@ -168,7 +167,6 @@ export default {
   font-weight: lighter;
   /* Use the Roboto font that is loaded in the <head> */
   font-family: "Roboto", sans-serif;
-
   background: url("https://upload.wikimedia.org/wikipedia/commons/5/53/Google_%22G%22_Logo.svg")
     transparent 5px 50% no-repeat;
   color: #444;
