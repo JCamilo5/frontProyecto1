@@ -67,7 +67,16 @@ export default {
           // que puede usarse para agregar más logica
           .then((response) => {
             this.ok = false;
-            console.log("creación link", response.data);
+            if(response.data.rememberClient.client.isAlternative){
+              this.email="";
+              this.makeToast(
+                "danger",
+                "Error ",
+                "El usuario ha sido registrado mediante google",
+                4000
+              );
+            }else{
+              //Validar cuando es de google
             this.$router.push({ name: "ExampleList" }).then(() => {
               this.makeToast(
                 "success",
@@ -76,6 +85,7 @@ export default {
                 4000
               );
             });
+            }
           });
       } catch (error) {
         this.makeToast(

@@ -137,6 +137,12 @@
                 ><strong>Iniciar Sesión</strong></a
               >
             </li>
+            <li v-show="!ok" class="nav-item">
+              <a class="nav-link text-light font-weight-bold"
+              href="/Registrar"
+                ><strong>Registrarse</strong></a
+              >
+            </li>
           </ul>
         </div>
       </div>

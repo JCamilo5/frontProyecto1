@@ -22,6 +22,7 @@
             autofocus=""
           />
           <input
+            @keydown.space.prevent
             type="password"
             id="contrasena"
             class="fadeIn third"
@@ -114,7 +115,7 @@ export default {
     },
     async iniciarSesion() {
       console.log("iniciando sesion");
-      if(!this.google && this.contrasena == ""){
+      if(!this.google && this.contrasena === ""){
         this.error_msg = "Datos incorrectos";
         this.error=true;
         return false;
@@ -136,7 +137,7 @@ export default {
           // con los datos obtenidos
           if (response.data.allUsers.edges[0] == null) {
             if (this.google) {
-              this.error_msg = "Usuario de Google no registrado";
+              this.error_msg = "Usuario de Google no registrado o inactivo";
               localStorage.clear();
               this.google = false;
               this.correo = "";
