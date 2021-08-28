@@ -207,9 +207,9 @@ export default {
       //console.log(googleUser.getBasicProfile());
       //window.location.assign('/RegisterPassword');
       //this.redirectExampleEdit()
-      this.names = googleUser.getBasicProfile().RT;
-      this.lastNames = googleUser.getBasicProfile().TR;
-      this.email = googleUser.getBasicProfile().Et;
+      this.names = googleUser.getBasicProfile().zU;
+      this.lastNames = googleUser.getBasicProfile().zS;
+      this.email = googleUser.getBasicProfile().Ht;
       this.google = true;
       this.is_alternative= true;
       //this.iniciarSesion();

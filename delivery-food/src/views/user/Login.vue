@@ -106,7 +106,7 @@ export default {
     },
     onSuccess(googleUser) {
       // This only gets the user information: id, name, imageUrl and email
-      this.correo = googleUser.getBasicProfile().Et;
+      this.correo = googleUser.getBasicProfile().Ht;
       this.google = true;
       this.iniciarSesion();
     },
