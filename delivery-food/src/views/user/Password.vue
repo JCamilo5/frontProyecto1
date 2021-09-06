@@ -2,7 +2,7 @@
   <div class="jumbotron">
     <h1 class="display-4">Recuperación de contraseña</h1>
     <hr class="my-4" />
-    <form  v-on:submit.prevent="recuperarC()">
+    <form  v-on:submit.prevent="rememberPassword()">
       <fieldset>
         <span class="help-block">
           Dirección de correo electrónico que utiliza para iniciar sesión en su
@@ -42,15 +42,15 @@ export default {
     ok: false,
   }),
   methods: {
-    makeToast(variant = null, title, info, tiempo) {
+    makeToast(variant = null, title, info, time) {
       this.$bvToast.toast(info, {
         title: title,
-        autoHideDelay: tiempo,
+        autoHideDelay: time,
         variant: variant,
         solid: true,
       });
     },
-    async recuperarC() {
+    async rememberPassword() {
       this.ok = true;
       try {
         await this.$apollo

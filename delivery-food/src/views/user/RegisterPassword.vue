@@ -23,7 +23,7 @@
           />
         </div>
     <button @click= "$router.push ('/Login')" class="btn btn-outline-secondary">Volver</button>
-    <button @click-prevent="comprobar()" type="submit" class="btn btn-outline-primary">
+    <button @click-prevent="check()" type="submit" class="btn btn-outline-primary">
       Registrar
     </button>
   </form>
@@ -51,9 +51,8 @@ export default {
   },
   methods: {
     createRegister() {
-      console.log(this.email);
       this.$apollo.mutate({
-        mutation: require("@/graphql/client/register.gql"),
+        mutation: require("@/graphql/client/createClient.gql"),
         variables: {
           name: this.names,
           lastName: this.lastNames,
@@ -65,12 +64,11 @@ export default {
       });
       this.$router.push({ name: "login" });
     },
-    async comprobar() {
+    async check() {
       if (this.password == this.passwordC) {
         this.createRegister();
       } else {
         alert("Las contraseñas no coinciden");
-        console.log("Las contraseñas no coinciden");
       }
     },
   }

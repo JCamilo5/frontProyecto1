@@ -10,25 +10,25 @@
         </div>
 
         <!-- Login Form -->
-        <form v-on:submit.prevent="iniciarSesion()">
+        <form v-on:submit.prevent="startSesion()">
           <input
             type="email"
-            id="correo"
+            id="email"
             class="fadeIn second"
             name="login"
             placeholder="Correo Electronico"
-            v-model="correo"
+            v-model="email"
             required=""
             autofocus=""
           />
           <input
             @keydown.space.prevent
             type="password"
-            id="contrasena"
+            id="password"
             class="fadeIn third"
             name="login"
             placeholder="Contraseña"
-            v-model="contrasena"
+            v-model="password"
             value=""
             required=""
           />
@@ -56,7 +56,7 @@
           <input
             type="submit"
             class="fadeIn fourth"
-            @click="$router.push('/Registrar')"
+            @click="$router.push('/Register')"
             value="Registrar"
           />
         </form>
@@ -73,15 +73,15 @@ export default {
     GoogleLogin,
   },
   data: () => ({
-    correo: "",
-    contrasena: "",
+    email: "",
+    password: "",
     error: false,
     error_msg: "datos invalidos",
     google: false,
     alert: true,
     // only needed if you want to render the button with the google ui
     params: {},
-    usuario: {
+    user: {
       id: "",
       email: "",
       password: "",
@@ -106,16 +106,15 @@ export default {
     },
     onSuccess(googleUser) {
       // This only gets the user information: id, name, imageUrl and email
-      this.correo = googleUser.getBasicProfile().Ht;
+      this.email = googleUser.getBasicProfile().Ht;
       this.google = true;
-      this.iniciarSesion();
+      this.startSesion();
     },
     onFailure(error) {
       console.log(error);
     },
-    async iniciarSesion() {
-      console.log("iniciando sesion");
-      if(!this.google && this.contrasena === ""){
+    async startSesion() {
+      if(!this.google && this.password === ""){
         this.error_msg = "Datos incorrectos";
         this.error=true;
         return false;
@@ -126,8 +125,8 @@ export default {
           query: require("@/graphql/user/autentication.gql"),
           // Define las variables
           variables: {
-            email: this.correo,
-            password: this.contrasena,
+            email: this.email,
+            password: this.password,
           },
         })
         // El método query devuelve una promesa
@@ -140,36 +139,32 @@ export default {
               this.error_msg = "Usuario de Google no registrado o inactivo";
               localStorage.clear();
               this.google = false;
-              this.correo = "";
+              this.email = "";
             } else {
               this.error_msg = "Datos inválidos";
             }
             this.error = true;
           } else {
-            console.log(
-              "Activo: ",
-              response.data.allUsers.edges[0].node.isActive
-            );
             if (response.data.allUsers.edges[0].node.isActive) {
-              this.usuario.id = response.data.allUsers.edges[0].node.id;
-              this.usuario.email = response.data.allUsers.edges[0].node.email;
-              //this.usuario.isalternative =  response.data.allUsers.edges[0].node.isalternative;
-              // this.usuario.password = response.data.allUsers.edges[0].node.password;
-              // this.usuario.isActive = response.data.allUsers.edges[0].node.isActive;
-              // this.usuario.isSuperuser = response.data.allUsers.edges[0].node.isSuperuser;
-              this.usuario.type = response.data.allUsers.edges[0].node.type;
-              this.usuario.names = response.data.allUsers.edges[0].node.contact.edges[0].node.names;
-              // this.usuario.lastnames = response.data.allUsers.edges[0].node.contact.edges[0].node.lastnames;
-              // this.usuario.location = response.data.allUsers.edges[0].node.contact.edges[0].node.location;
-              // this.usuario.telephone = response.data.allUsers.edges[0].node.contact.edges[0].node.telephone;
-              localStorage.setItem("user", JSON.stringify(this.usuario));
-              localStorage.setItem("hayUser", true);
+              this.user.id = response.data.allUsers.edges[0].node.id;
+              this.user.email = response.data.allUsers.edges[0].node.email;
+              //this.user.isalternative =  response.data.allUsers.edges[0].node.isalternative;
+              // this.user.password = response.data.allUsers.edges[0].node.password;
+              // this.user.isActive = response.data.allUsers.edges[0].node.isActive;
+              // this.user.isSuperuser = response.data.allUsers.edges[0].node.isSuperuser;
+              this.user.type = response.data.allUsers.edges[0].node.type;
+              this.user.names = response.data.allUsers.edges[0].node.contact.edges[0].node.names;
+              // this.user.lastnames = response.data.allUsers.edges[0].node.contact.edges[0].node.lastnames;
+              // this.user.location = response.data.allUsers.edges[0].node.contact.edges[0].node.location;
+              // this.user.telephone = response.data.allUsers.edges[0].node.contact.edges[0].node.telephone;
+              localStorage.setItem("user", JSON.stringify(this.user));
+              localStorage.setItem("existUser", true);
 
               this.$router.push({ name: "ExampleList" }).then(() => {
                 this.makeToast(
                   "success",
                   "Bienvenido",
-                  "Usuario: " + this.usuario.names,
+                  "Usuario: " + this.user.names,
                   3000
                 );
               });
@@ -182,7 +177,7 @@ export default {
     },
   },
   mounted() {
-    if (localStorage.getItem("hayUser")) {
+    if (localStorage.getItem("existUser")) {
       this.$router.push({ name: "ExampleList" });
     }
   },

@@ -11,9 +11,9 @@
           id="feedback-user"
           class="form-control"
           :state="validation"
-          name="contrasena"
+          name="password"
           placeholder="********"
-          v-model="contrasenaN"
+          v-model="passwordNew"
           required=""
         ></b-form-input>
         <b-form-invalid-feedback :state="validation">
@@ -24,18 +24,18 @@
         <label for="validationCustom02">Confirmar contraseña</label>
         <b-form-input
           type="password"
-          id="contrasena"
+          id="password"
           class="form-control"
-          :state="iguales"
-          name="contrasena"
+          :state="equal"
+          name="password"
           placeholder="********"
-          v-model="contrasena"
+          v-model="password"
           required=""
         ></b-form-input>
         <b-form-text id="password-help-block">
           La contraseña debe tener entre 5 y 12 caracteres
         </b-form-text>
-        <b-form-invalid-feedback :state="iguales">
+        <b-form-invalid-feedback :state="equal">
           Las contraseñas no son iguales.
         </b-form-invalid-feedback>
       </div>
@@ -52,23 +52,23 @@ export default {
   data() {
     return {
       id: "",
-      contrasenaN: "",
-      contrasena: "",
+      passwordNew: "",
+      password: "",
       show: true,
       error_msg: "",
     };
   },
   methods: {
-    makeToast(variant = null, title, info, tiempo) {
+    makeToast(variant = null, title, info, time) {
       this.$bvToast.toast(info, {
         title: title,
-        autoHideDelay: tiempo,
+        autoHideDelay: time,
         variant: variant,
         solid: true,
       });
     },
     async editPassword() {
-      if (this.iguales) {
+      if (this.equal) {
         await this.$apollo
           .mutate({
             // Establece la mutación de editar
@@ -76,7 +76,7 @@ export default {
             // Define las variables
             variables: {
               id: this.id,
-              password: this.contrasenaN,
+              password: this.passwordNew,
             },
             // Actualiza el cache de GraphQL para visualizar la eliminación
             // al momento de cargar la vista
@@ -111,14 +111,14 @@ export default {
   },
   computed: {
     validation() {
-      if (this.contrasenaN.length > 0) {
-        return this.contrasenaN.length > 4 && this.contrasenaN.length < 13;
+      if (this.passwordNew.length > 0) {
+        return this.passwordNew.length > 4 && this.passwordNew.length < 13;
       }
       return null;
     },
-    iguales() {
-      if (this.contrasena.length > 4) {
-        if (this.contrasenaN == this.contrasena) {
+    equal() {
+      if (this.password.length > 4) {
+        if (this.passwordNew == this.password) {
           return true;
         } else {
           return false;
