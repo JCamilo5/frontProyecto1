@@ -219,7 +219,7 @@ export default {
       null === localStorage.getItem("existUser") ||
       false === localStorage.getItem("existUser")
     ) {
-      this.$router.push({ name: "ExampleList" });
+      this.$router.push({ name: "catalogSearch" });
     } else {
       if (this.id) {
         await this.$apollo
@@ -284,7 +284,7 @@ export default {
           let user = JSON.parse(localStorage.getItem("user"));
           user.names = this.name;
           localStorage.setItem("user", JSON.stringify(user));
-          this.$router.push({ name: "ExampleList" }).then(() => {
+          this.$router.push({ name: "catalogSearch" }).then(() => {
             this.makeToast(
               "success",
               "Actualizado",

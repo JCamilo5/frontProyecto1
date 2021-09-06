@@ -20,6 +20,16 @@ const routes = [
     component: () => import("@/views/example/ExampleList.vue"),
   },
   {
+    path: "/",
+    name: "catalogSearch",
+    component: () => import("@/views/searches/catalogSearch.vue"),
+  },
+  {
+    path: "/Geolocation",
+    name: "geolocationSearch",
+    component: () => import("@/views/searches/geolocationSearch.vue"),
+  },
+  {
     path: "/example-add",
     name: "ExampleAdd",
     component: () => import("@/views/example/ExampleAdd.vue"),

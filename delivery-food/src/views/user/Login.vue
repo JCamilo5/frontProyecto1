@@ -160,7 +160,7 @@ export default {
               localStorage.setItem("user", JSON.stringify(this.user));
               localStorage.setItem("existUser", true);
 
-              this.$router.push({ name: "ExampleList" }).then(() => {
+              this.$router.push({ name: "catalogSearch" }).then(() => {
                 this.makeToast(
                   "success",
                   "Bienvenido",
@@ -178,7 +178,7 @@ export default {
   },
   mounted() {
     if (localStorage.getItem("existUser")) {
-      this.$router.push({ name: "ExampleList" });
+      this.$router.push({ name: "catalogSearch" });
     }
   },
 };
