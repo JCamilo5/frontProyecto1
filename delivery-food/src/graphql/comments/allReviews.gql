@@ -1,0 +1,23 @@
+{
+  allReviews {
+    edges {
+      node {
+        id
+        qualityService
+        presentation
+        preparation
+        ingredients 
+        price
+        textures
+        cookingPoint 
+        comments
+        order {
+          client {
+            id
+            email
+          }
+        }
+      }
+    }
+  }
+}

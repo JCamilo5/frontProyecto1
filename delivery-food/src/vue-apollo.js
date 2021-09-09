@@ -12,8 +12,8 @@ Vue.use(VueApollo);
 const AUTH_TOKEN = "apollo-token";
 
 // Http endpoint
-//const httpEndpoint = "https://delivery-food-backend.herokuapp.com/graphql/";
-const httpEndpoint = "http://localhost:8000/graphql/";
+const httpEndpoint = "https://delivery-food-backend.herokuapp.com/graphql/";
+//const httpEndpoint = "http://localhost:8000/graphql/";
 
 // Config
 const defaultOptions = {

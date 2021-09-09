@@ -52,7 +52,7 @@
           >Iniciar sesión</GoogleLogin
         >
         <br />
-        <form v-on:submit.prevent="login">
+        <form>
           <input
             type="submit"
             class="fadeIn fourth"
@@ -96,10 +96,10 @@ export default {
     },
   }),
   methods: {
-    makeToast(variant = null, title, info, tiempo) {
+    makeToast(variant = null, title, info, time) {
       this.$bvToast.toast(info, {
         title: title,
-        autoHideDelay: tiempo,
+        autoHideDelay: time,
         variant: variant,
         solid: true,
       });
