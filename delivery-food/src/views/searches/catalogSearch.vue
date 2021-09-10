@@ -29,7 +29,7 @@
       <div class="row">
         <div
           class="col-xl-4 col-md-6 col-sm-12"
-          v-for="enterprise in allEnterprises.edges"
+          v-for="enterprise in displayedEnterprises"
           :key="enterprise.node.id"
           v-show="enterprise.node.status"
         >
@@ -39,8 +39,30 @@
           </template>
         </div>
       </div>
+      <div class="row">
+    <div class="btn-group col-md-2 offset-md-5">
+      <button
+        type="button" 
+        v-if="page != 1"
+        @click="page--"
+        class="btn btn-sm btn-outline-secondary">Anterior</button>
+       <button
+        type="button"
+        v-for="pageNumber in pages.slice(page- 1, page+ 5)"
+        :key="pageNumber"
+        @click ="page = pageNumber"
+        class="btn btn-sm btn-outline-secondary">
+        {{pageNumber}}
+        </button>
+
+       <button type="button" 
+        v-if="page < pages.length"
+        @click="page++"
+        class="btn btn-sm btn-outline-secondary"
+        >Siguiente</button>
     </div>
-    <b-pagination v-model="currentPage" pills :total-rows="rows" center></b-pagination>
+    </div>
+    </div>
   </div>
 </template>
 
@@ -58,16 +80,31 @@ export default {
   },
   data() {
     return {
-      rows: 2,
-      currentPage: 1,
       enterprise: "",
       // Variable que recibe los resultados
       // de la consulta definida en la sección apollo
       allEnterprises: Object,
+      page: 1,
+      perpage: 3,
+      pages: [],
       // Variable que recibe el error de la consulta
       error: null,
     };
   },
+  async created(){
+     await this.$apollo
+        .query({
+           // Consulta
+          query: require("@/graphql/enterprise/allEnterprises.gql"),
+          
+        })
+    .then((response) => {
+          this.allEnterprises = response.data.allEnterprises;
+          this.setEnterprises();
+          //this.pages = response.data.allEnterprises.edges.length;
+          }
+       ) },
+
   methods: {
     makeToast(variant = null, title, info, time) {
       this.$bvToast.toast(info, {
@@ -77,6 +114,7 @@ export default {
         solid: true,
       });
     },
+    
     findEnterprise() {
       this.$apollo
         .query({
@@ -91,6 +129,7 @@ export default {
         // que puede usarse para agregar más logica
         .then((response) => {
           this.allEnterprises = response.data.allEnterprises;
+          //this.pages = response.data.allEnterprises.edges.length;
           if (response.data.allEnterprises.edges[0] == null) {
             this.makeToast(
               "danger",
@@ -99,22 +138,38 @@ export default {
               3000
             );
           }
+          this.pages = [];
+          this.setEnterprises();
           this.enterprise = "";
         });
     },
-  },
-  /**
-   * Consulta simple que debe definir el mismo nombre en la sección data
-   */
-  apollo: {
-    allEnterprises: {
-      // Consulta
-      query: require("@/graphql/enterprise/allEnterprises.gql"),
-      // Asigna el error a la variable definida en data
-      error(error) {
-        this.error = JSON.stringify(error.message);
-      },
+    setEnterprises(){
+      if(this.allEnterprises.edges != null ){
+        let numberPages = Math.ceil(this.allEnterprises.edges.length / this.perpage);
+        for(let i=1; i <= numberPages;){
+          this.pages.push(i);
+          i+=1;
+        }
+      }
     },
+    paginate(allEnterprises){
+        if(allEnterprises != null){
+          let page = this.page;
+          let perpage = this.perpage;
+          let from = (page * perpage) - perpage;
+          let to = (page * perpage);
+          return allEnterprises.slice(from, to);
+        }else{
+          return null;
+        }
+    }
+    },
+
+   computed: {
+     displayedEnterprises(){
+  
+       return this.paginate(this.allEnterprises.edges);
+    }
   },
 };
 </script>

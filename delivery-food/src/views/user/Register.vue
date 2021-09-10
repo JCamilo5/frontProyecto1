@@ -3,7 +3,7 @@
     <h1>Registro</h1>
     <form>
       <div class="form-group">
-        <label for="names">Nombres</label>
+        <label for="names">Nombres <span class="text-danger">*</span></label>
         <input
           :disabled="google"
           type="text"
@@ -13,7 +13,7 @@
           required
           aria-describedby="namesComplete"
         />
-        <label for="lastNames">Apellidos</label>
+        <label for="lastNames">Apellidos <span class="text-danger">*</span></label>
         <input
           :disabled="google"
           type="text"
@@ -24,7 +24,7 @@
           aria-describedby="lastNames"
         />
 
-        <label for="email">Correo electronico</label>
+        <label for="email">Correo electronico <span class="text-danger">*</span></label>
         <input
           :disabled="google"
           type="email"
@@ -34,7 +34,7 @@
           required
         />
 
-        <label for="phoneNumber">Número de telefono</label>
+        <label for="phoneNumber">Número de telefono <span class="text-danger">*</span></label>
         <input
           type="number"
           class="form-control"
@@ -45,16 +45,17 @@
         />
 
         <div v-show="!google">
-          <label for="exampleInputPassword">Contraseña</label>
-          <input
-            @keydown.space.prevent
-            type="password"
-            class="form-control"
-            id="password"
-            v-model.trim="password"
-            required=""
-          />
-          <label for="confirmPassword">Confirmar contraseña</label>
+            
+            <label for="exampleInputPassword">Contraseña <span class="text-danger">*</span></label>
+            <input 
+              @keydown.space.prevent
+              type="password"
+              class="form-control"
+              id="password"
+              v-model.trim="password"
+              required=""
+            />
+          <label for="confirmPassword">Confirmar contraseña <span class="text-danger">*</span></label>
           <input
             @keydown.space.prevent
             type="password"
@@ -64,7 +65,7 @@
             required=""
           />
         </div>
-        <label for="location">Direccion</label>
+        <label for="location">Direccion <span class="text-danger">*</span></label>
         <input
           type="text"
           class="form-control"
@@ -74,7 +75,7 @@
           aria-describedby="location"
         />
         <br />
-        <br />
+        <p>Los campos marcados con <span class="text-danger">*</span> son Obligatorios </p>
         <GoogleLogin
           class="buttonText"
           :params="params"
@@ -174,18 +175,50 @@ export default {
     async check() {
       if (!this.google) {
         if (this.names != null && this.lastNames!= null && this.email!= null && this.telephone!= null && this.location!= null && this.password!= null && this.passwordConfirmation!=null){
-          if (this.password === this.passwordConfirmation) {
-            await this.checkEmail();
-            if (this.flag === false) {
-              this.createRegister();
+          if (this.password.length>4){
+            if (this.password === this.passwordConfirmation) {
+              await this.checkEmail();
+              if (this.flag === false) {
+                this.createRegister();
+              } else {
+                this.makeToast(
+                  //"success",
+                  "danger",
+                  "El correo ya ha sido usado por otra persona!!",
+                  "Cuidado",
+                  3000
+                );
+                //alert("El correo ya ha sido usado por otra persona!!");
+              }
             } else {
-              alert("El correo ya ha sido usado por otra persona!!");
+              this.makeToast(
+                  //"success",
+                  "danger",
+                  "Las contraseñas no coinciden",
+                  "Cuidado",
+                  3000
+                );
+              //alert("Las contraseñas no coinciden");
             }
-          } else {
-            alert("Las contraseñas no coinciden");
+          }else{
+            this.makeToast(
+                  //"success",
+                  "danger",
+                  "Las contraseñas deben tener mas de 4 digitos",
+                  "Cuidado",
+                  3000
+            );
+            //alert("Las contraseñas deben tener mas de 4 digitos");      
           }
         } else {
-          alert("Llena todos los campos por favor ");
+          this.makeToast(
+            //"success",
+            "danger",
+            "Llena todos los campos por favor ",
+            "Cuidado",
+            3000
+          );
+          //alert("Llena todos los campos por favor ");
         }
       } else {
         if (this.telephone != null && this.location != null) {
@@ -194,10 +227,26 @@ export default {
           if (this.flag === false) {
             this.createRegister();
           } else if (this.flag === true) {
-            alert("El correo ya ha sido usado por otra persona!!");
+              this.makeToast(
+                  //"success",
+                  "danger",
+                  "El correo ya ha sido usado por otra persona!!",
+                  "Cuidado",
+                  //"Correo: " + this.user.email,
+                  3000
+              );
+            //alert("El correo ya ha sido usado por otra persona!!");
           }
         }else{
-          alert("Llena todos los campos por favor ")
+          this.makeToast(
+                  //"success",
+                  "danger",
+                  "Llena todos los campos por favor",
+                  "Cuidado",
+                  //"Correo: " + this.user.email,
+                  3000
+          );
+          //alert("Llena todos los campos por favor ")
       }
       }
     },
