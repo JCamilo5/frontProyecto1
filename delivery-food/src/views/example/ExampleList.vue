@@ -104,8 +104,7 @@ export default {
   },
   /**
    * Consulta simple que debe definir el mismo nombre en la sección data
- 
-*/
+   */
   apollo: {
     allEnterprises: {
       // Consulta

@@ -52,7 +52,7 @@
           >Iniciar sesión</GoogleLogin
         >
         <br />
-        <form>
+        <form v-on:submit.prevent="login">
           <input
             type="submit"
             class="fadeIn fourth"

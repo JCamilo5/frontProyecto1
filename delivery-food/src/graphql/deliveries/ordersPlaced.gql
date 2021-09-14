@@ -1,0 +1,32 @@
+{
+  allOrders{
+    edges{
+      node{
+        client{
+          id
+        }
+        id
+        date,
+        estimatedTime,
+        location,
+        details{
+          edges{
+            node{
+              quantity,
+              product{
+                id,
+                name,
+                price,
+                enterprise{
+                  name,
+                  location
+                  
+                },
+              }
+            }
+          }
+        }
+      }
+    }
+  }
+}

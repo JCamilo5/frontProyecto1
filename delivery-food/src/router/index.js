@@ -85,10 +85,22 @@ const routes = [
      component: () => import("@/views/user/Reset.vue")
   },
   {
-    path: "/RegisterPassword",
-    name: "RegisterPassword",
-    component: () => import("@/views/user/RegisterPassword.vue"),
+    path: "/products-list",
+    name: "ProductsList",
+    component: () => import("@/views/products/ProductList.vue"),
   },
+  {
+    path: "/product-add",
+    name: "ProductAdd",
+    component: () => import("@/views/products/ProductAdd.vue"),
+  },
+  {
+    path: "/product-edit/:id",
+    name: "ProductEdit",
+    component: () => import("@/views/products/ProductEdit.vue"),
+  },
+
+
 ];
 
 const router = new VueRouter({

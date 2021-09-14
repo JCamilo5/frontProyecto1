@@ -1,96 +1,132 @@
 <template>
-  <div>
-    <h3>Mis Pedidos</h3>
-    <template v-for="(pedido, idx) in pedidos">
-      <accordion :key="pedido.id" :item="pedido" :checkbox_use="true" :id="idx">
-        <div class="card-body">
-          <strong> Detalles de pedido</strong>
-          <b> Productos:</b> <br />
-          {{ pedido.productos }}<br />
-          <b> Establecimiento: </b> <br />
-          {{ pedido.establecimiento }} <br />
-          <b> Costo: </b> <br />
-          {{ pedido.costo }}
-        </div>
-      </accordion>
-    </template>
-    <br>
+  <div class="container" style="margin-top: 1em">
+    <h3><b>Mis Pedidos</b></h3>
 
-    <span class="container d-flex justify-content-end">
-      <button type="button" class="btn btn-black  " @click="trackOrder">
-        Seguir Pedido
-      </button>
-    </span>
-    <br>
-    <div class="container map" ref="map" v-show="showmap"></div>
+    <div v-if="$apollo.loading">
+      <LoadingGraphql />
+    </div>
+    <div v-else-if="error" class="d-flex justify-content-center">
+      <ConnectionErrorGraphql />
+    </div>
+    <div v-else>
+      <paginate name="orders" :list="orders" :per="5">
+        <template v-for="(order, idx) in paginated('orders')">
+          <accordion
+            :key="order.id"
+            :item="order"
+            :checkbox_use="true"
+            :id="idx"
+          >
+            <div class="card-body">
+              <h4>Resumen de pedido <br /></h4>
+              <div>
+                <table class="table table-bordered">
+                  <thead>
+                    <tr>
+                      <th>Productos</th>
+                      <th>Cantidad</th>
+                      <th>Valor Unitario</th>
+                    </tr>
+                  </thead>
+                  <tbody>
+                    <tr v-for="product in order.products" :key="product.id">
+                      <td>{{ product.name }}</td>
+                      <td>{{ product.quantity }}</td>
+                      <td>{{ product.cost }}</td>
+                    </tr>
+                  </tbody>
+                </table>
+              </div>
+              <h5>
+                Establecimiento: <b>{{ order.enterprise }}</b>
+              </h5>
+              <h5>Lugar de entrega: {{ order.destination.address }}</h5>
+              <h5 >
+                Tu pedido llegara en: <b style="color: var(--orange)"><Countdown sec="10" min="0" hour="0" /></b>
+              </h5>
+              <h5>
+                Costo Total: <b>${{ order.cost }}</b>
+              </h5>
+            </div>
+          </accordion>
+        </template>
+      </paginate>
+      <div v-if="orders.length === 5" class="div-paginate">
+        <paginate-links
+          for="orders"
+          :classes="{ ul: 'pagination' }"
+          :show-step-links="true"
+        ></paginate-links>
+      </div>
+      <div
+        v-if="orders.length > 0"
+        class="container d-flex justify-content-end"
+      >
+        <button type="button" class="btn btn-black" @click="trackOrder">
+          Seguir Pedido
+        </button>
+      </div>
+      <h4 v-show="exitsOrders">
+        No has realizado ningún pedido, <b>¡animate a comprar!</b>
+        <not-found></not-found>
+      </h4>
+      <br />
+      <div v-show="showmap">
+        <div class="map" ref="map"></div>
+      </div>
+    </div>
   </div>
 </template>
-<script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyCkQNpJPrbKgjmDPbJCZjTEXw2rJ4bwyS0"></script>
 
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyCkQNpJPrbKgjmDPbJCZjTEXw2rJ4bwyS0"></script>
 <script>
 import Accordion from "@/components/common/Accordion.vue";
+import LoadingGraphql from "@/components/common/LoadingGraphql.vue";
+import ConnectionErrorGraphql from "@/components/common/ConnectionErrorGraphql.vue";
+import NotFound from "@/components/common/NotFound.vue";
+import Countdown from "@/views/deliveries/Countdown.vue";
 
 export default {
-  components: { Accordion },
+  components: {
+    Accordion,
+    LoadingGraphql,
+    ConnectionErrorGraphql,
+    NotFound,
+    Countdown,
+  },
   name: "OrdersPlaced",
 
   mounted() {
-    this.getUserPosition();
+    this.queryOrders();
+     
   },
   data() {
     return {
-      showmap: false,
-      duration: "",
-      distance: "",
+      exitsOrders: false,
 
-      routes: [],
-      destination: {
-        address: "Cra. 1d Este ## 16 - 52, El Bordo, Patía, Cauca",
-          lat: 2.1087322,
-          lng: -76.9855849,
+      user: {
+        id: "Q2xpZW50Tm9kZToxOQ==", //"Q2xpZW50Tm9kZToy", //"Q2xpZW50Tm9kZTo2",
       },
-      pedidos: [
-        {
-          id: "1",
-          productos: "Alitas BBQ, Gaseosa 1.5 litros",
-          establecimiento: "Delicias",
-          costo: "$24.000",
-          selected: false,
-          origin: {
-             address: "Popayán,Cauca",
-             lat: 2.4574702,
-             lng: -76.6349537,
-           },
-        },
-        // {
-        //   id: "2",
-        //   productos: "Sancocho de gallina",
-        //   establecimiento: "Doña Pepa",
-        //   costo: "$18.000",
-        //   selected: false,
-        //   origin: {
-        //     address: "Popayán,Cauca",
-        //     lat: 2.4574702,
-        //     lng: -76.6349537,
-        //   },
-        // },
-
-        // {
-        //   id: "3",
-        //   productos: "Arepas de choclo, Queso cuajada bien caliente",
-        //   establecimiento: "Queseria de mì",
-        //   costo: "$8000",
-        //   selected: false,
-        //   origin: {
-        //     address: "Cra. 1d Este ## 16 - 52, El Bordo, Patía, Cauca",
-        //     lat: 2.1087322,
-        //     lng: -76.9855849,
-        //   },
-        // },
-      ],
+      showmap: false,
+      routes: [],
+      orders: [],
+      error: null,
+      //Pagination
+      currentPage: 1,
+      paginate: ["orders"],
     };
   },
   methods: {
+    queryOrders() {
+      this.$apollo
+        .query({
+          query: require("@/graphql/deliveries/ordersPlaced.gql"),
+        })
+        .then((response) => {
+          this.tansformQuery(response.data.allOrders.edges);
+          
+        });
+    },
     getUserPosition() {
       if (navigator.geolocation) {
         navigator.geolocation.getCurrentPosition((position) => {
@@ -103,8 +139,8 @@ export default {
         console.log("No se ha podido acceder su ubicación");
       }
     },
-    getDataLocal() {
-      this.pedidos.forEach((pedido) => {
+    getRoutes() {
+      this.orders.forEach((order) => {
         let route = {
           origin: {
             address: "",
@@ -119,57 +155,59 @@ export default {
 
           distance: "",
           duration: "",
+          durationInSec: "",
         };
-        route.origin = pedido.origin;
-        route.destination = this.destination;
-        this.getDurationDistance(route);
+        route.origin = order.origin;
+        route.destination = order.destination;
 
-        route.duration = this.duration;
-        route.distance = this.distance;
+      this.getDurationDistance(route);
         this.routes.push(route);
       });
     },
-    //TODO: Tomar cada latitud y longitud y pasarla a Places API para obtener el address exacto
-    async getAddressFrom(lat, lon) {
-      const URL =
-        "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
-        lat +
-        "," +
-        lon +
-        "&key=AIzaSyCkQNpJPrbKgjmDPbJCZjTEXw2rJ4bwyS0";
-      await fetch(URL)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.status === "OK") {
-            console.log(data);
-          } else {
-            console.log("No fue posible obtener el lugar");
+    async getCompleteAddress(address) {
+      const geocoder = new google.maps.Geocoder();
+      let completeAddress = {
+        address: "",
+        lat: "",
+        lng: "",
+      };
+      await geocoder.geocode(
+        {
+          address: address,
+        },
+        (response, status) => {
+          if (status === "OK") {
+            (completeAddress.address = response[0].formatted_address),
+              (completeAddress.lat = response[0].geometry.location.lat()),
+              (completeAddress.lng = response[0].geometry.location.lng());
           }
-        })
-        .catch((error) => {
-          this.error = error.message;
-          console.log(error.message);
-        });
+        }
+      );
+
+      return completeAddress;
     },
 
-    async getDurationDistance(route) {
-      const URL = `https://cors-anywhere.herokuapp.com/https://maps.googleapis.com/maps/api/distancematrix/json?origins=${route.origin.lat},${route.origin.lng}&destinations=${route.destination.lat},${route.destination.lng}&key=AIzaSyCkQNpJPrbKgjmDPbJCZjTEXw2rJ4bwyS0`;
-      await fetch(URL)
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.status === "OK") {
-            let elements = data.rows[0].elements[0];
-
+    getDurationDistance(route) {
+      const distanceMatrix = new google.maps.DistanceMatrixService();
+      distanceMatrix.getDistanceMatrix(
+        {
+          origins: [{ lat: route.origin.lat, lng: route.origin.lng }],
+          destinations: [
+            { lat: route.destination.lat, lng: route.destination.lng },
+          ],
+          travelMode: "DRIVING",
+        },
+        (response) => {
+          if (response.rows[0].elements[0].status === "OK") {
+            let elements = response.rows[0].elements[0];
             route.distance = elements.distance.text;
             route.duration = elements.duration.text;
+            route.durationInSec = elements.duration.value;
           } else {
             this.error = "No results found";
           }
-        })
-        .catch((error) => {
-          console.log(error.message);
-          this.error = error.message;
-        });
+        }
+      );
     },
     showRoute(routes) {
       const directionsService = new google.maps.DirectionsService();
@@ -179,12 +217,13 @@ export default {
         mapTyeId: google.maps.MapTypeId.ROADMAP,
       });
       routes.forEach((route) => {
-        console.log(route.duration);
-        console.log(route.distance);
         directionsService.route(
           {
-            origin: route.origin.address,
-            destination: route.destination.address,
+            origin: { lat: route.origin.lat, lng: route.origin.lng },
+            destination: {
+              lat: route.destination.lat,
+              lng: route.destination.lng,
+            },
             travelMode: "DRIVING",
           },
           (response, status) => {
@@ -194,7 +233,7 @@ export default {
               });
 
               const originLabel = new google.maps.InfoWindow({
-                content: `<i class ="marker alternate icon"></i> ${route.origin.address}`,
+                content: `<i class ="bi-geo-alt-fill alternate icon"></i> ${route.origin.address}`,
                 position: new google.maps.LatLng(
                   route.origin.lat,
                   route.origin.lng
@@ -203,7 +242,7 @@ export default {
 
               originLabel.open(map, null);
               const destinationLabel = new google.maps.InfoWindow({
-                content: `<i class ="flag checkered icon"></i> ${route.destination.address}`,
+                content: `<i class ="bi-flag-fill checkered icon"> </i> ${route.destination.address}`,
                 position: new google.maps.LatLng(
                   route.destination.lat,
                   route.destination.lng
@@ -217,7 +256,7 @@ export default {
 
               const middleLoc = overviewPath[middleIndex];
               const distanceDurationLabel = new google.maps.InfoWindow({
-                content: `<i class ="car icon"></i> ${route.distance}-${route.duration}`,
+                content: `<i class ="bi-alarm-fill icon"></i> ${route.duration}`,
                 position: new google.maps.LatLng(
                   middleLoc.lat(),
                   middleLoc.lng()
@@ -233,10 +272,12 @@ export default {
         );
       });
     },
+
     trackOrder() {
+      this.getRoutes();
       let flag = false;
-      for (let idx in this.pedidos) {
-        if (this.pedidos[idx].selected) {
+      for (let idx in this.orders) {
+        if (this.orders[idx].selected) {
           this.showmap = true;
           this.showRoute([this.routes[idx]]);
           flag = true;
@@ -245,42 +286,102 @@ export default {
       if (!flag) {
         alert("Seleccione un pedido para ver la ruta y el tiempo estimado");
       }
-      
     },
+    async tansformQuery(data) {
+      let allOrders = data.filter(
+        (userId) => userId.node.client.id === this.user.id
+      );
+      if (allOrders.length > 0) {
+        allOrders.forEach((order) => {
+          let newOrder = {
+            id: order.node.id,
+            date: order.node.date,
+            products: [],
+            enterprise: "",
+            cost: "",
+            selected: false,
+            estimatedTime: {},
+            duration: "",
+            origin: {},
+            destination: {},
+          };
+
+          let cost = 0;
+          order.node.details.edges.forEach((product) => {
+            newOrder.products.push({
+              id: product.node.product.id,
+              name: product.node.product.name,
+              quantity: product.node.quantity,
+              cost: product.node.product.price,
+            });
+            cost += parseInt(
+              product.node.product.price * product.node.quantity
+            );
+            newOrder.enterprise = product.node.product.enterprise.name;
+            this.getCompleteAddress(
+              product.node.product.enterprise.location
+            ).then((value) => {
+              newOrder.origin = value;
+            });
+          });
+          newOrder.cost = cost;
+
+          this.getCompleteAddress(order.node.location).then((value) => {
+            newOrder.destination = value;
+            this.orders.push(newOrder);
+          });
+        });
+       
+        //this.countDown()
+      } else {
+        this.exitsOrders = false;
+      }
+    },
+    //Return the estimated time for any order in hours, minutes and seconds
+    getEstimatedTime(preparation, delivery) {
+      let secTotal =( preparation * 60 )+ delivery;
+      console.log(secTotal)
+    },
+    secondsToString(seconds) {
+      var hour = Math.floor(seconds / 3600);
+      hour = hour < 10 ? "0" + hour : hour;
+      var minute = Math.floor((seconds / 60) % 60);
+      minute = minute < 10 ? "0" + minute : minute;
+      var second = seconds % 60;
+      second = second < 10 ? "0" + second : second;
+      return { hour:hour, min: minute,sec: second}
+    },
+
+    getCurrentUser() {},
   },
 };
 </script>
 
-<style scoped>
-.centered {
-  margin: auto;
-  background-color: rgb(0, 66, 128);
-  margin-left: 45%;
-  margin-top: 3%;
-}
+//General Component styles 
+<style scope>
 .btn-black {
-  background-color: black;
-  color: whitesmoke;
+  background-color: var(--dark);
+  color: var(--white);
 }
 .btn-black:hover {
-  background-color: rgba(255, 102, 0, 0.521);
-  color: black;
+  background-color: var(--dark-xx);
+  color: var(--light);
 }
 .color-text-tar {
-  color: black;
+  color: var(--black);
 }
 .color-text-tar:hover {
   text-decoration: none;
-  color: black;
+  color: var(--black);
 }
 
 .card-header:hover {
-  background-color: rgba(235, 231, 228, 0.521);
-  color: black;
+  background-color: var(--grey);
+  color: var(--black);
 }
 .content-black {
-  background-color: rgb(241, 238, 238);
-  color: rgb(0, 0, 0);
+  background-color: var(--white);
+  color: var(--black);
 }
 .map {
   height: 25em;
@@ -288,6 +389,15 @@ export default {
   right: 0;
   left: 0;
   bottom: 0;
-  background-color: teal;
+  background-color: var(--light);
 }
 </style>
+//Clouds over map
+<style >
+.gm-style-iw button {
+  display: none !important;
+}
+</style>
+
+
+

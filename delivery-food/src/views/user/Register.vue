@@ -45,9 +45,8 @@
         />
 
         <div v-show="!google">
-            
             <label for="exampleInputPassword">Contraseña <span class="text-danger">*</span></label>
-            <input 
+            <input
               @keydown.space.prevent
               type="password"
               class="form-control"
@@ -182,43 +181,35 @@ export default {
                 this.createRegister();
               } else {
                 this.makeToast(
-                  //"success",
                   "danger",
                   "El correo ya ha sido usado por otra persona!!",
                   "Cuidado",
                   3000
                 );
-                //alert("El correo ya ha sido usado por otra persona!!");
               }
             } else {
               this.makeToast(
-                  //"success",
                   "danger",
                   "Las contraseñas no coinciden",
                   "Cuidado",
                   3000
                 );
-              //alert("Las contraseñas no coinciden");
             }
           }else{
             this.makeToast(
-                  //"success",
                   "danger",
                   "Las contraseñas deben tener mas de 4 digitos",
                   "Cuidado",
                   3000
             );
-            //alert("Las contraseñas deben tener mas de 4 digitos");      
           }
         } else {
           this.makeToast(
-            //"success",
             "danger",
             "Llena todos los campos por favor ",
             "Cuidado",
             3000
           );
-          //alert("Llena todos los campos por favor ");
         }
       } else {
         if (this.telephone != null && this.location != null) {
@@ -228,25 +219,19 @@ export default {
             this.createRegister();
           } else if (this.flag === true) {
               this.makeToast(
-                  //"success",
                   "danger",
                   "El correo ya ha sido usado por otra persona!!",
                   "Cuidado",
-                  //"Correo: " + this.user.email,
                   3000
               );
-            //alert("El correo ya ha sido usado por otra persona!!");
           }
         }else{
           this.makeToast(
-                  //"success",
                   "danger",
                   "Llena todos los campos por favor",
                   "Cuidado",
-                  //"Correo: " + this.user.email,
                   3000
           );
-          //alert("Llena todos los campos por favor ")
       }
       }
     },

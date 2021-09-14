@@ -11,17 +11,18 @@
         type="text"
         class="form-control"
         placeholder="Ingrese su dirección"
-        aria-label="Username"
-        aria-describedby="basic-addon1"
         v-model="address"
       />
     </div>
+    <div v-show="showmap">
+       <section id="map" class="containder map" ></section>
 
-    <section id="map" class="containder map"></section>
+    </div>
+   
     <br />
   </div>
 </template>
-<script src="https://maps.googleapis.com/maps/api/js?libraries=places&key=AIzaSyAYFB5yvCJzaZy09_qPCONtoT6-pPmCkns"></script>
+<script src="https://maps.googleapis.com/maps/api/js?&libraries=places&key=AIzaSyAYFB5yvCJzaZy09_qPCONtoT6-pPmCkns"></script>
 <script>
 export default {
   name: "Geolocation",
@@ -30,12 +31,14 @@ export default {
     return {
       address: "",
       error: "",
+      map: Object,
     };
   },
   props: ["showinput", "showmap"],
 
   mounted() {
-    let autocomplete = new google.maps.places.Autocomplete(
+    this.showUserLocation(2.45, -76.6167);
+    const autocomplete = new google.maps.places.Autocomplete(
       document.getElementById("autocomplete"),
       {
         bounds: google.maps.LatLngBounds(
@@ -44,8 +47,8 @@ export default {
       }
     );
     autocomplete.addListener("place_changed", () => {
-      let place = autocomplete.getPlace();
-      console.log(place);
+      const place = autocomplete.getPlace();
+      
       this.showUserLocation(
         place.geometry.location.lat(),
         place.geometry.location.lng()
@@ -70,39 +73,44 @@ export default {
         console.log("Su navegador no soporta geolocation API");
       }
     },
-    getAddressFrom(lat, lon) {
-      fetch(
-        "https://maps.googleapis.com/maps/api/geocode/json?latlng=" +
-          lat +
-          "," +
-          lon +
-          "&key=AIzaSyAYFB5yvCJzaZy09_qPCONtoT6-pPmCkns"
-      )
-        .then((response) => response.json())
-        .then((data) => {
-          if (data.status === "OK") {
-            this.address = data.results[0].formatted_address;
-            console.log(data.results[0].formatted_address);
-          } else {
-            console.log("Error");
-          }
-        })
-        .catch((error) => {
-          this.error = error.message;
-          console.log(error.message);
-        });
+    getAddressFrom(lat, lng) {
+      const latlng = {
+        lat: lat,
+        lng: lng,
+      };
+      const geocoder = new google.maps.Geocoder();
+      geocoder.geocode({ location: latlng }, (response, status) => {
+        if (status === "OK") {
+          this.address = response[0].formatted_address;
+          this.$emit ('value',this.address)
+        } else {
+          console.log(status);
+        }
+      });
     },
 
     showUserLocation(lat, lon) {
-      let map = new google.maps.Map(document.getElementById("map"), {
+      this.map = new google.maps.Map(document.getElementById("map"), {
         zoom: 15,
         center: new google.maps.LatLng(lat, lon),
       });
-
-      new google.maps.Marker({
+      let marker = new google.maps.Marker({
         position: new google.maps.LatLng(lat, lon),
-        map: map,
+        map: this.map,
       });
+
+      this.map.addListener("click", (event) => {
+        marker.setPosition(event.latLng);
+        let direction = this.getAddressFrom(
+          event.latLng.lat(),
+          event.latLng.lng()
+        );
+        
+        if (direction != undefined) {
+          document.getElementById("autocomplete").value = direction;
+        }
+      });
+      
     },
   },
 };

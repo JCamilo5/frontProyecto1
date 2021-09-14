@@ -1,5 +1,6 @@
 import Vue from "vue";
 import VueApollo from "vue-apollo";
+import { createUploadLink } from "apollo-upload-client";
 import {
   createApolloClient,
   restartWebsockets,
@@ -12,7 +13,7 @@ Vue.use(VueApollo);
 const AUTH_TOKEN = "apollo-token";
 
 // Http endpoint
-const httpEndpoint = "https://delivery-food-backend.herokuapp.com/graphql/";
+const httpEndpoint = "https://delivery-food-backend.herokuapp.com/graphql/"; //Ruta al endpoint actualizada
 //const httpEndpoint = "http://localhost:8000/graphql/";
 
 // Config
@@ -37,7 +38,12 @@ const defaultOptions = {
   // note: don't override httpLink here, specify httpLink options in the
   // httpLinkOptions property of defaultOptions.
   // link: myLink
-
+  defaultHttpLink: false,
+  httpLinkOptions: {
+    httpLink: createUploadLink({
+      uri: httpEndpoint,
+    }),
+  },
   // Override default cache
   // cache: myCache
 
