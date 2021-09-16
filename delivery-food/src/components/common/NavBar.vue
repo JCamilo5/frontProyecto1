@@ -203,7 +203,7 @@ export default {
     onSuccess() {
       this.ok = false;
       localStorage.clear();
-      this.$router.push({ name: "ExampleList" });
+      this.$router.push({ name: "/" });
     },
     removeClient() {
       if (confirm("¿Seguro que desea darse de baja?", false)) {
@@ -280,4 +280,3 @@ a:active {
   min-height: calc(100vh - var(--height-navbar) - var(--height-footer));
 }
 </style>
-

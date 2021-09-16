@@ -26,42 +26,38 @@
       <div v-else-if="error" class="d-flex justify-content-center">
         <ConnectionErrorGraphql />
       </div>
-      <div class="row">
-        <div
-          class="col-xl-4 col-md-6 col-sm-12"
-          v-for="enterprise in displayedEnterprises"
-          :key="enterprise.node.id"
-          v-show="enterprise.node.status"
-        >
-          <template>
-            <EnterpriseCard :enterprise="enterprise.node" />
-            <br />
-          </template>
-        </div>
+      <!--PAGINACIÓN-->
+        <paginate ref="paginator" name="Enterprises" :list="Enterprises" :per="3">
+          <div class="row">
+            <div
+              class="col-xl-4 col-md-6 col-sm-12"
+              v-for="(enterprise, id) in paginated('Enterprises')"
+                :key="enterprise.id"
+                :item="enterprise"
+                :id="id"
+                :checkbox_use="true"
+                v-show="enterprise.node.status"
+            > 
+              <template>
+                <EnterpriseCard :enterprise="enterprise.node" />
+                <br />
+              </template>
+            </div>
+          </div>
+        </paginate>
       </div>
-      <div class="row">
-    <div class="btn-group col-md-2 offset-md-5">
-      <button
-        type="button" 
-        v-if="page != 1"
-        @click="page--"
-        class="btn btn-sm btn-outline-secondary">Anterior</button>
-       <button
-        type="button"
-        v-for="pageNumber in pages.slice(page- 1, page+ 5)"
-        :key="pageNumber"
-        @click ="page = pageNumber"
-        class="btn btn-sm btn-outline-secondary">
-        {{pageNumber}}
-        </button>
-
-       <button type="button" 
-        v-if="page < pages.length"
-        @click="page++"
-        class="btn btn-sm btn-outline-secondary"
-        >Siguiente</button>
-    </div>
-    </div>
+      
+      <div class="div-paginate">
+        <paginate-links
+          for="Enterprises"
+          :classes="{ ul: 'pagination' }"
+          :show-step-links="true"
+        ></paginate-links>
+      </div>
+            <div class="div-paginate">
+        <span v-if="$refs.paginator">
+          Viendo {{ $refs.paginator.pageItemsCount }} resultados
+        </span>
     </div>
   </div>
 </template>
@@ -84,26 +80,27 @@ export default {
       // Variable que recibe los resultados
       // de la consulta definida en la sección apollo
       allEnterprises: Object,
+      currentPage: 1,
       page: 1,
       perpage: 3,
-      pages: [],
+      Enterprises: [],
+      paginate: ["Enterprises"],
       // Variable que recibe el error de la consulta
       error: null,
     };
   },
-  async created(){
-     await this.$apollo
-        .query({
-           // Consulta
-          query: require("@/graphql/enterprise/allEnterprises.gql"),
-          
-        })
-    .then((response) => {
-          this.allEnterprises = response.data.allEnterprises;
-          this.setEnterprises();
-          //this.pages = response.data.allEnterprises.edges.length;
-          }
-       ) },
+  async created() {
+    await this.$apollo
+      .query({
+        // Consulta
+        query: require("@/graphql/enterprise/allEnterprises.gql"),
+      })
+      .then((response) => {
+        this.Enterprises = response.data.allEnterprises.edges;
+        console.log(this.Enterprises);
+        //this.pages = response.data.allEnterprises.edges.length;
+      });
+  },
 
   methods: {
     makeToast(variant = null, title, info, time) {
@@ -114,7 +111,7 @@ export default {
         solid: true,
       });
     },
-    
+
     findEnterprise() {
       this.$apollo
         .query({
@@ -128,7 +125,7 @@ export default {
         // El método query devuelve una promesa
         // que puede usarse para agregar más logica
         .then((response) => {
-          this.allEnterprises = response.data.allEnterprises;
+          this.Enterprises = response.data.allEnterprises.edges;
           //this.pages = response.data.allEnterprises.edges.length;
           if (response.data.allEnterprises.edges[0] == null) {
             this.makeToast(
@@ -138,38 +135,202 @@ export default {
               3000
             );
           }
-          this.pages = [];
-          this.setEnterprises();
           this.enterprise = "";
         });
     },
-    setEnterprises(){
-      if(this.allEnterprises.edges != null ){
-        let numberPages = Math.ceil(this.allEnterprises.edges.length / this.perpage);
-        for(let i=1; i <= numberPages;){
-          this.pages.push(i);
-          i+=1;
-        }
-      }
-    },
-    paginate(allEnterprises){
-        if(allEnterprises != null){
-          let page = this.page;
-          let perpage = this.perpage;
-          let from = (page * perpage) - perpage;
-          let to = (page * perpage);
-          return allEnterprises.slice(from, to);
-        }else{
-          return null;
-        }
-    }
-    },
-
-   computed: {
-     displayedEnterprises(){
-  
-       return this.paginate(this.allEnterprises.edges);
-    }
   },
 };
 </script>
+
+<style>
+.pagination {
+  height: 36px;
+  margin: 18px 0;
+  color: #6c58bf;
+}
+
+.pagination ul {
+  display: inline-block;
+  *display: inline;
+  /* IE7 inline-block hack */
+  *zoom: 1;
+  margin-left: 0;
+  color: #ffffff;
+  margin-bottom: 0;
+  -webkit-border-radius: 3px;
+  -moz-border-radius: 3px;
+  border-radius: 3px;
+  -webkit-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  -moz-box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+  box-shadow: 0 1px 2px rgba(0, 0, 0, 0.05);
+}
+
+.pagination li {
+  display: inline;
+  color: var(--orange);
+}
+
+.pagination a {
+  float: left;
+  padding: 0 14px;
+  line-height: 34px;
+  color: var(--orange);
+  text-decoration: none;
+  border: 1px solid #ddd;
+  border-left-width: 0;
+}
+
+.pagination a:hover,
+.pagination .active a {
+  background-color: var(--primary-x);
+  color: #ffffff;
+}
+
+.pagination a:focus {
+  background-color: var(--primary-x);
+  color: #ffffff;
+}
+
+.pagination .active a {
+  color: #ffffff;
+  cursor: default;
+}
+
+.pagination .disabled span,
+.pagination .disabled a,
+.pagination .disabled a:hover {
+  color: #999999;
+  background-color: transparent;
+  cursor: default;
+}
+
+.pagination li:first-child a {
+  border-left-width: 1px;
+  -webkit-border-radius: 3px 0 0 3px;
+  -moz-border-radius: 3px 0 0 3px;
+  border-radius: 3px 0 0 3px;
+}
+
+.pagination li:last-child a {
+  -webkit-border-radius: 0 3px 3px 0;
+  -moz-border-radius: 0 3px 3px 0;
+  border-radius: 0 3px 3px 0;
+}
+
+.pagination-centered {
+  text-align: center;
+}
+
+.pagination-right {
+  text-align: right;
+}
+
+.pager {
+  margin-left: 0;
+  margin-bottom: 18px;
+  list-style: none;
+  text-align: center;
+  color: var(--orange);
+  *zoom: 1;
+}
+
+.pager:before,
+.pager:after {
+  display: table;
+  content: "";
+}
+
+.pager:after {
+  clear: both;
+}
+
+.pager li {
+  display: inline;
+  color: var(--orange);
+}
+
+.pager a {
+  display: inline-block;
+  padding: 5px 14px;
+  color: var(--orange);
+  background-color: #fff;
+  border: 1px solid #ddd;
+  -webkit-border-radius: 15px;
+  -moz-border-radius: 15px;
+  border-radius: 15px;
+}
+
+.pager a:hover {
+  text-decoration: none;
+  background-color: #f5f5f5;
+}
+
+.pager .next a {
+  float: right;
+}
+
+.pager .previous a {
+  float: left;
+}
+
+.pager .disabled a,
+.pager .disabled a:hover {
+  color: #999999;
+}
+.pagination > li > a {
+  background-color: white;
+  color: var(--orange);
+}
+
+.pagination > li > a:focus,
+.pagination > li > a:hover,
+.pagination > li > span:focus,
+.pagination > li > span:hover {
+  color: #5a5a5a;
+  background-color: #eee;
+  border-color: #ddd;
+}
+
+.pagination > .active > a {
+  color: white;
+  background-color: var(--orange) !important;
+  border: solid 1px var(--orange) !important;
+}
+
+.pagination > .active > a:hover {
+  background-color: var(--orange) !important;
+  border: solid 1px var(--orange);
+  color: var(--dark);
+}
+</style>
+
+<style scoped>
+.container {
+  display: flex;
+  justify-content: center;
+}
+
+.btn-color {
+  background-color: var(--dark-x);
+  color: whitesmoke;
+}
+
+.div-paginate {
+  margin: 0 auto;
+  text-align: center;
+  display: flex;
+  justify-content: center;
+}
+
+.div-width {
+  width: 80%;
+  margin-left: auto;
+  margin-right: auto;
+}
+.padding-label {
+  padding-bottom: 2px;
+}
+.div {
+  margin-left: 81%;
+}
+</style>

@@ -82,7 +82,7 @@ const routes = [
   {
     path: "/password/reset/:id",
     name: "Reset",
-     component: () => import("@/views/user/Reset.vue")
+    component: () => import("@/views/user/Reset.vue"),
   },
   {
     path: "/products-list",
@@ -99,8 +99,6 @@ const routes = [
     name: "ProductEdit",
     component: () => import("@/views/products/ProductEdit.vue"),
   },
-
-
 ];
 
 const router = new VueRouter({

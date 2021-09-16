@@ -1,7 +1,7 @@
 <template>
   <div>
     <h1>Registro</h1>
-    <form>
+    <form validated v-on:submit.prevent="check()">
       <div class="form-group">
         <label for="names">Nombres <span class="text-danger">*</span></label>
         <input
@@ -84,18 +84,18 @@
         </GoogleLogin>
         <br />
       </div>
-
-    </form>
-    <button
+      <button
         type="submit"
         class="btn btn-outline-primary"
-        @click="check()"
       >
         Registrar
       </button>
     <button @click="$router.push('/Login')" class="btn btn-outline-secondary">
       Volver
     </button>
+
+    </form>
+
   </div>
 </template>
 

@@ -15,8 +15,12 @@
       </h5>
       <p class="card-text">{{ enterprise.location | capitalize }}</p>
       <p class="card-text">
-        Horario de atención: {{ enterprise.businessHours | capitalize }}
+        Horario de atención: 
       </p>
+      <p class="card-text">
+          {{ variable }}
+      </p>
+      
       <button v-show="ok" type="button" class="btn btn-success btn-sm mr-4">
         Hacer Pedido
       </button>
@@ -26,22 +30,24 @@
 
 <script>
 export default {
-  name: "EnterpriseCard",
+  name: "ExampleCard",
+  data() {
+    return{
+      ok: localStorage.getItem("existUser"),
+      allReviews: Object,
+      valoration: 0,
+      counter: 0,
+      variable : "",
+      validarRango: "",
+    }
+  },
+
   props: {
     /**
      * Objeto establecimiento enviado
      * como prop desde una vista
      */
     enterprise: Object,
-  },
-  data() {
-    return {
-      //itemsRatins:[],
-      ok: localStorage.getItem("existUser"),
-      allReviews: Object,
-      valoration: 0,
-      counter: 0,
-    };
   },
   created() {
     this.$apollo
@@ -55,7 +61,66 @@ export default {
         //this.pages = response.data.allEnterprises.edges.length;
       });
   },
-  methods: {
+
+  mounted(){
+    this.mostrar();
+  },
+  methods:{
+    mostrar(){
+          let diasSemana = JSON.parse(this.enterprise.businessHours);
+          //console.log(diasSemana);
+          let dias = ["domingo","lunes","martes","miercoles","jueves","viernes","sabado"];
+          let hoy = new Date();
+          let dia = dias[hoy.getDay()];
+          //let hora = hoy.getHours();
+          //console.log(hora);
+          //let horassss = parseInt(diasSemana.jueves.horaI);
+          //this.variable = dias[hoy.getDay()];
+
+          if (dia == "lunes") {
+            if (diasSemana.lunes.horaI != "") {
+                this.variable = "Abierto: "+diasSemana.lunes.horaI +" Cierre: "+diasSemana.lunes.horaF;
+                //this.validarRango = true;
+            }
+            
+          }else if (dia == "martes") {
+            if (diasSemana.martes.horaI != "") {
+                this.variable = "Abierto: "+diasSemana.martes.horaI +" Cierre: "+diasSemana.martes.horaF;
+            }
+            
+          }
+          else if (dia == "miercoles") {
+            if (diasSemana.miercoles.horaI != "") {
+                this.variable = "Abierto: "+diasSemana.miercoles.horaI +" Cierre: "+diasSemana.miercoles.horaF;
+            }
+            
+          }
+          else if (dia == "jueves") {
+            if (diasSemana.jueves.horaI != "") {
+                this.variable = "Abierto: "+diasSemana.jueves.horaI
+                 +" Cierre: "+diasSemana.jueves.horaF;
+            }
+            
+          }
+          else if (dia == "viernes") {
+            if (diasSemana.viernes.horaI != "") {
+                this.variable = "Abierto: "+diasSemana.viernes.horaI +" Cierre: "+diasSemana.viernes.horaF;
+            }
+            
+          }
+          else if (dia == "sabado") {
+            if (diasSemana.sabado.horaI != "") {
+                this.variable = "Abierto: "+diasSemana.sabado.horaI +" Cierre: "+diasSemana.sabado.horaF;
+            }
+            
+          }
+          else if (dia == "domingo") {
+            if (diasSemana.domingo.horaI != "") {
+                this.variable = "Abierto: "+diasSemana.domingo.horaI +" Cierre: "+diasSemana.domingo.horaF;
+            }
+            
+          }
+    },
     apreciation() {
       var varaux = 0;
       var average = 0;
@@ -86,7 +151,6 @@ export default {
         //this.itemsRatings[this.counter] = varaux;
       }
       this.valoration = average / this.counter;
-
       //this.auxsize=this.itemsRatings.length;
       
     },
@@ -97,13 +161,12 @@ export default {
       } else if (text == "REGULAR") {
         valor = 3;
       }
-
       return valor;
     },
   },
+  
 };
 </script>
-
 <style scoped>
 .name-app {
   color: var(--primary-x);
@@ -111,11 +174,9 @@ export default {
 .bg-cart {
   background-color: var(--dark-x);
 }
-
 .navbar-orange-text {
   color: var(--orange);
 }
-
 .color-black {
   color: white;
 }
