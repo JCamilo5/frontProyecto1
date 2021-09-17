@@ -114,14 +114,12 @@
           >Iniciar sesión</GoogleLogin
         >
         <br />
-        <form v-on:submit.prevent="login">
           <input
             type="submit"
             class="fadeIn fourth"
             @click="$router.push('/Register')"
             value="Registrar"
           />
-        </form>
       </div>
     </div>
   </div>

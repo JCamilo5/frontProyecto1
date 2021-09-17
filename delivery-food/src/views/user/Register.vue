@@ -1,7 +1,7 @@
 <template>
-  <div>
+  <div class="Register">
     <h1>Registro</h1>
-    <form validated v-on:submit.prevent="check()">
+    <b-form  validated v-on:submit.prevent="check()">
       <div class="form-group">
         <label for="names">Nombres <span class="text-danger">*</span></label>
         <input
@@ -44,7 +44,7 @@
           pattern="[0-9]+"
         />
 
-        <div v-show="!google">
+        <div v-if="!google">
             <label for="exampleInputPassword">Contraseña <span class="text-danger">*</span></label>
             <input
               @keydown.space.prevent
@@ -75,26 +75,28 @@
         />
         <br />
         <p>Los campos marcados con <span class="text-danger">*</span> son Obligatorios </p>
-        <GoogleLogin
+        <input
+        type="submit"
+        class="btn btn-outline-primary"
+        value="Registrar"
+      />
+    <button @click="$router.push('/Login')" class="btn btn-outline-secondary">
+      Volver
+    </button>
+    <br />
+      </div>
+
+    </b-form>
+    <div v-if="!google">
+    <GoogleLogin
           class="buttonText"
           :params="params"
           :onSuccess="onSuccess"
           :onFailure="onFailure"
           >Registrar con Google
         </GoogleLogin>
-        <br />
-      </div>
-      <button
-        type="submit"
-        class="btn btn-outline-primary"
-      >
-        Registrar
-      </button>
-    <button @click="$router.push('/Login')" class="btn btn-outline-secondary">
-      Volver
-    </button>
 
-    </form>
+    </div>
 
   </div>
 </template>
