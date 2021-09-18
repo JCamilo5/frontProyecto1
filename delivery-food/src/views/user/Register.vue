@@ -1,7 +1,7 @@
 <template>
-  <div class="Register">
+  <div class="card-body container align-self-center">
+  <!-- <div class="col-md-6 mb-3">a -->
     <h1>Registro</h1>
-    <b-form  validated v-on:submit.prevent="check()">
       <div class="form-group">
         <label for="names">Nombres <span class="text-danger">*</span></label>
         <input
@@ -40,11 +40,11 @@
           class="form-control"
           id="phoneNumber"
           v-model.trim="telephone"
-          required=""
+          required
           pattern="[0-9]+"
         />
 
-        <div v-if="!google">
+        <div v-show="!google">
             <label for="exampleInputPassword">Contraseña <span class="text-danger">*</span></label>
             <input
               @keydown.space.prevent
@@ -52,7 +52,7 @@
               class="form-control"
               id="password"
               v-model.trim="password"
-              required=""
+              required
             />
           <label for="confirmPassword">Confirmar contraseña <span class="text-danger">*</span></label>
           <input
@@ -61,52 +61,45 @@
             class="form-control"
             id="confirmPassword"
             v-model.trim="passwordConfirmation"
-            required=""
+            required
           />
         </div>
         <label for="location">Direccion <span class="text-danger">*</span></label>
-        <input
-          type="text"
-          class="form-control"
-          id="location"
-          v-model.trim="location"
-          required=""
-          aria-describedby="location"
-        />
+        <Geolocation v-on:value= "ral_Location" showmap="True"/>
+
         <br />
         <p>Los campos marcados con <span class="text-danger">*</span> son Obligatorios </p>
-        <input
-        type="submit"
-        class="btn btn-outline-primary"
-        value="Registrar"
-      />
-    <button @click="$router.push('/Login')" class="btn btn-outline-secondary">
-      Volver
-    </button>
-    <br />
-      </div>
-
-    </b-form>
-    <div v-if="!google">
-    <GoogleLogin
+        <GoogleLogin
           class="buttonText"
           :params="params"
           :onSuccess="onSuccess"
           :onFailure="onFailure"
           >Registrar con Google
         </GoogleLogin>
-
-    </div>
-
+        <br />
+      </div>
+      
+    <button
+        type="submit"
+        class="btn btn-outline-primary"
+        @click="check()"
+      >
+        Registrar
+      </button>
+    <button @click="$router.push('/Login')" class="btn btn-outline-secondary">
+      Volver
+    </button>
   </div>
 </template>
 
 <script>
 import GoogleLogin from "vue-google-login";
+import Geolocation from "@/components/geolocation/Geolocation.vue"
 export default {
   name: "Register",
   components: {
     GoogleLogin,
+    Geolocation
   },
 
   data() {
@@ -126,6 +119,10 @@ export default {
     };
   },
   methods: {
+    ral_Location(value){
+      console.log("valor"+ value)
+      this.location = value;
+    },
     makeToast(variant = null, title, info, time) {
       this.$bvToast.toast(info, {
         title: title,

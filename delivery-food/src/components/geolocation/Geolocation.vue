@@ -2,15 +2,16 @@
   <div>
     <div class="input-group mb-3">
       <div class="input-group-prepend">
-        <button class="input-group-text btn btn-dark" @click="getUserLocation">
+        <button class="input-group-text btn btn-dark" @click="getUserLocation"> <span class="text-danger">*</span>
           <b-icon icon="geo-alt-fill"></b-icon>
         </button>
       </div>
       <input
+        :disabled="true"
         id="autocomplete"
         type="text"
         class="form-control"
-        placeholder="Ingrese su dirección"
+        placeholder="<-- Pulsa en el icono para adquirir tu direccion"
         v-model="address"
       />
     </div>
@@ -29,6 +30,7 @@ export default {
 
   data() {
     return {
+      activate: false,
       address: "",
       error: "",
       map: Object,
@@ -57,21 +59,22 @@ export default {
   },
   methods: {
     getUserLocation() {
-      if (navigator.geolocation) {
-        navigator.geolocation.getCurrentPosition(
-          (position) => {
-            let latitud = position.coords.latitude;
-            let longitud = position.coords.longitude;
-            this.getAddressFrom(latitud, longitud);
-            this.showUserLocation(latitud, longitud);
-          },
-          (error) => {
-            this.error = error.message;
-          }
-        );
-      } else {
-        console.log("Su navegador no soporta geolocation API");
-      }
+      this.activate = true;
+        if (navigator.geolocation) {
+          navigator.geolocation.getCurrentPosition(
+            (position) => {
+              let latitud = position.coords.latitude;
+              let longitud = position.coords.longitude;
+              this.getAddressFrom(latitud, longitud);
+              this.showUserLocation(latitud, longitud);
+            },
+            (error) => {
+              this.error = error.message;
+            }
+          );
+        } else {
+          console.log("Su navegador no soporta geolocation API");
+        }
     },
     getAddressFrom(lat, lng) {
       const latlng = {
