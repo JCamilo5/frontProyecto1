@@ -26,7 +26,7 @@
               </a>
             </li>
             <li class="nav-item mr-3" v-show="ok">
-              <a class="nav-link text-light font-weight-bold" href="/Geolocation">Busqueda geolocalización</a>
+              <a class="nav-link text-light font-weight-bold" href="/geolocationSearch">Busqueda geolocalización</a>
             </li>
             <li class="nav-item mr-3" v-show="ok">
               <a class="nav-link text-light font-weight-bold" href="#">Servicios</a>
@@ -228,7 +228,7 @@ export default {
             );
             this.ok = false;
             localStorage.clear();
-            this.$router.push({ name: "ExampleList" });
+            this.$router.push({ name: "/" });
           });
       }
     },
