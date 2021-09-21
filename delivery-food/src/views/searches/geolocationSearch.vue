@@ -73,7 +73,7 @@ export default {
   /**
    * Consulta simple que debe definir el mismo nombre en la sección data
    */
-  mounted() {
+ async mounted() {
     if (
       null === localStorage.getItem("existUser") ||
       false === localStorage.getItem("existUser")
@@ -82,9 +82,18 @@ export default {
     } else {
       let user = JSON.parse(localStorage.getItem("user"));
       let location = user.location;
-      this.getCompleteAddress(location).then((value) => {
-        this.showUserLocation(value.lat, value.lng);
+      await this.$apollo
+      .query({
+        // Consulta
+        query: require("@/graphql/enterprise/allEnterprises.gql"),
+      })
+      .then((response) => {
+        this.allEnterprises = response.data.allEnterprises.edges;
+        //this.pages = response.data.allEnterprises.edges.length;
       });
+      this.getCompleteAddress(location).then((value) => {
+          this.showUserLocation(value.lat, value.lng);
+        });
 
       // const autocomplete = new google.maps.places.Autocomplete(
       //   document.getElementById("autocomplete"),
@@ -104,25 +113,18 @@ export default {
       // });
     }
   },
-
-  async created() {
-    await this.$apollo
-      .query({
-        // Consulta
-        query: require("@/graphql/enterprise/allEnterprises.gql"),
-      })
-      .then((response) => {
-        this.allEnterprises = response.data.allEnterprises.edges;
-        this.MarkEnterprise();
-        //this.pages = response.data.allEnterprises.edges.length;
-      });
+  created(){
+    const vm = this
+    window.showAllEnterpise = function() {
+    vm.showAllEnterpise()
+}
   },
   methods: {
     MarkEnterprise() {
       this.allEnterprises.forEach((enterprise) => {
         if (enterprise.node.status) {
           this.getCompleteAddress(enterprise.node.location).then((value) => {
-            this.showEnterpriseLocation(value.lat, value.lng);
+            this.showEnterpriseLocation(value.lat, value.lng,enterprise.node.name);
           });
         }
       });
@@ -180,43 +182,40 @@ export default {
         }
       });
     },
-    showEnterpriseLocation(lat, lon) {
-      const contentString = "<div>Hola</div>";
+    showAllEnterpise(){
+      console.log("hola")
+    },
+
+    showEnterpriseLocation(lat, lon, name) {
+      const contentString = "<div>" + name + "<br><input type='submit' id='butSubmit' value='Ver info' onclick='showAllEnterpise()'><div id='bar'></div></div>";
       // "<template> <"+
       //                       EnterpriseCard+
       //                       " :enterprise="+
       //                       enterprise+
       //                       "/>Hola </template>";
-      const map = new google.maps.Map(this.$refs["map"], {
-        center: new google.maps.LatLng(2.45, -76.6167),
-        zoom: 18,
-        mapTyeId: google.maps.MapTypeId.ROADMAP,
-      });
       const marker = new google.maps.Marker({
         position: new google.maps.LatLng(lat, lon),
         map: this.map,
       });
-      this.attachSecretMessage(marker, contentString);
-    },
-    attachSecretMessage(marker, secretMessage) {
       const infowindow = new google.maps.InfoWindow({
-        content: secretMessage,
+        content: contentString,
       });
-
       marker.addListener("click", () => {
         infowindow.open(marker.get("map"), marker);
       });
     },
 
     showUserLocation(lat, lon) {
-      this.map = new google.maps.Map(document.getElementById("map"), {
+      var map = new google.maps.Map(document.getElementById("map"), {
         zoom: 15,
         center: new google.maps.LatLng(lat, lon),
       });
       new google.maps.Marker({
         position: new google.maps.LatLng(lat, lon),
-        map: this.map,
+        map: map,
       });
+      this.map = map;
+      this.MarkEnterprise();
     },
   },
 };
