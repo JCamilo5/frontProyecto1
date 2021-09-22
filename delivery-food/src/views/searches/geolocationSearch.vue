@@ -12,30 +12,20 @@
     <div v-else-if="error" class="d-flex justify-content-center">
       <ConnectionErrorGraphql />
     </div>
-    <div>
-      <div>
-        <div class="input-group mb-3">
-          <div class="input-group-prepend">
-            <button
-              class="input-group-text btn btn-dark"
-              @click="getUserLocation"
-            >
-              <b-icon icon="geo-alt-fill"></b-icon>
-            </button>
-          </div>
-          <input
-            id="autocomplete"
-            type="text"
-            class="form-control"
-            placeholder="Ingrese su dirección"
-            v-model="address"
-          />
-        </div>
+    
+    <div class="row">
+      <div class="col">
         <div>
           <section id="map" class="containder map"></section>
         </div>
 
         <br />
+      </div>
+      <div v-if="enterprise!=null" class="col">
+        <template >
+          <EnterpriseCard :enterprise="enterprise" />
+          <br />
+        </template>
       </div>
     </div>
   </div>
@@ -63,17 +53,14 @@ export default {
       address: "",
       error: "",
       map: Object,
-      enterprises: {
-        name: "",
-        location: "",
-      },
+      enterprise: null
     };
   },
   props: ["showinput", "showmap"],
   /**
    * Consulta simple que debe definir el mismo nombre en la sección data
    */
- async mounted() {
+  async mounted() {
     if (
       null === localStorage.getItem("existUser") ||
       false === localStorage.getItem("existUser")
@@ -83,17 +70,17 @@ export default {
       let user = JSON.parse(localStorage.getItem("user"));
       let location = user.location;
       await this.$apollo
-      .query({
-        // Consulta
-        query: require("@/graphql/enterprise/allEnterprises.gql"),
-      })
-      .then((response) => {
-        this.allEnterprises = response.data.allEnterprises.edges;
-        //this.pages = response.data.allEnterprises.edges.length;
-      });
-      this.getCompleteAddress(location).then((value) => {
-          this.showUserLocation(value.lat, value.lng);
+        .query({
+          // Consulta
+          query: require("@/graphql/enterprise/allEnterprises.gql"),
+        })
+        .then((response) => {
+          this.allEnterprises = response.data.allEnterprises.edges;
+          //this.pages = response.data.allEnterprises.edges.length;
         });
+      this.getCompleteAddress(location).then((value) => {
+        this.showUserLocation(value.lat, value.lng);
+      });
 
       // const autocomplete = new google.maps.places.Autocomplete(
       //   document.getElementById("autocomplete"),
@@ -113,18 +100,19 @@ export default {
       // });
     }
   },
-  created(){
-    const vm = this
-    window.showAllEnterpise = function() {
-    vm.showAllEnterpise()
-}
+  created() {
+    let vm = this;
+    window.showAllEnterpise = function (enterprise) {
+      vm.showAllEnterpise(enterprise);
+      vm.enterprise=enterprise
+    };
   },
   methods: {
     MarkEnterprise() {
       this.allEnterprises.forEach((enterprise) => {
         if (enterprise.node.status) {
           this.getCompleteAddress(enterprise.node.location).then((value) => {
-            this.showEnterpriseLocation(value.lat, value.lng,enterprise.node.name);
+            this.showEnterpriseLocation(value.lat, value.lng, enterprise.node);
           });
         }
       });
@@ -182,17 +170,17 @@ export default {
         }
       });
     },
-    showAllEnterpise(){
-      console.log("hola")
+    showAllEnterpise(enterprise) {
+      console.log("Hola",enterprise.name)
+      this.enterprise= enterprise;
     },
-
-    showEnterpriseLocation(lat, lon, name) {
-      const contentString = "<div>" + name + "<br><input type='submit' id='butSubmit' value='Ver info' onclick='showAllEnterpise()'><div id='bar'></div></div>";
-      // "<template> <"+
-      //                       EnterpriseCard+
-      //                       " :enterprise="+
-      //                       enterprise+
-      //                       "/>Hola </template>";
+    showEnterpriseLocation(lat, lon, enterprise) {
+      
+      window.enterprise = enterprise;
+      const contentString =
+        `<b>` +
+        enterprise.name +
+        `<br><input type='submit' id='butSubmit' value='Ver info' onclick='showAllEnterpise(`+JSON.stringify(enterprise)+`)'><div id='bar'></div></b>`;
       const marker = new google.maps.Marker({
         position: new google.maps.LatLng(lat, lon),
         map: this.map,
@@ -225,7 +213,7 @@ export default {
 .map {
   /* position:absolute; */
   background: whitesmoke;
-  width: 100;
+  width: 300;
   height: 30em;
 }
 </style>
