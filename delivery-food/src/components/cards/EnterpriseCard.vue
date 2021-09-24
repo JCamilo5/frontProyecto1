@@ -7,7 +7,7 @@
     />
     <div class="card-body container-md">
         <div>
-          <b-form-rating class="bg-cart" variant="warning" v-model="valoration" id="rating-sm-no-border" no-border
+          <b-form-rating class="bg-cart text-warning" variant="warning" font="warning" v-model="valoration" show-value id="rating-sm-no-border" no-border
       readonly></b-form-rating>
         </div>
       <h5 class="card-title font-weight-bold">
@@ -15,12 +15,12 @@
       </h5>
       <p class="card-text">{{ enterprise.location | capitalize }}</p>
       <p class="card-text">
-        Horario de atención: 
+        Horario de atención:
       </p>
       <p class="card-text">
-          {{ variable }}
+          {{variable}}
       </p>
-      
+
       <button v-show="ok" type="button" class="btn btn-success btn-sm mr-4">
         Hacer Pedido
       </button>
@@ -39,6 +39,15 @@ export default {
       counter: 0,
       variable : "",
       validarRango: "",
+      aux1:0,
+      aux2:0,
+      aux3:0,
+      aux4:0,
+      aux5:0,
+      aux6:0,
+      aux7:0,
+      auxprom:0,
+      auxcont:0,
     }
   },
 
@@ -54,10 +63,14 @@ export default {
       .query({
         // Consulta
         query: require("@/graphql/comments/allReviews.gql"),
+          // Define las variables
+          variables: {
+            id: this.enterprise.id,
+          },
       })
       .then((response) => {
-        this.allReviews = response.data.allReviews;
-        this.apreciation();
+        this.allReviews = response.data.enterprise;
+        this.allReviewsMeth1()
         //this.pages = response.data.allEnterprises.edges.length;
       });
   },
@@ -66,59 +79,114 @@ export default {
     this.mostrar();
   },
   methods:{
+    valnum(texto){
+      var aux=1;
+      if(texto=="BUENO"){
+        aux=5
+      }
+      else if(texto=="REGULAR"){
+          aux=3
+        }
+      return aux;
+    },
+
+  async allReviewsMeth1(){
+
+      var aux1=0;
+      var aux2=0;
+      var aux3=0;
+      var aux4=0;
+      var aux5=0;
+      var aux6=0;
+      var aux7=0;
+      var conttam=0;
+      var comments=[];
+      var users=[];
+
+      for (const product in this.allReviews.products.edges){
+        for(const order in  this.allReviews.products.edges[product].node.orders.edges){
+          comments.push(this.allReviews.products.edges[product].node.orders.edges[order].node.review.comments)
+          users.push(this.allReviews.products.edges[product].node.orders.edges[order].node.client.email)
+          aux1=Math.round(aux1+this.valnum(this.allReviews.products.edges[product].node.orders.edges[order].node.review.qualityService))
+          aux2=Math.round(aux2+this.valnum(this.allReviews.products.edges[product].node.orders.edges[order].node.review.preparation))
+          aux3=Math.round(aux3+this.valnum(this.allReviews.products.edges[product].node.orders.edges[order].node.review.presentation))
+          aux4=Math.round(aux4+this.valnum(this.allReviews.products.edges[product].node.orders.edges[order].node.review.ingredients))
+          aux5=Math.round(aux5+this.valnum(this.allReviews.products.edges[product].node.orders.edges[order].node.review.price))
+          aux6=Math.round(aux6+this.valnum(this.allReviews.products.edges[product].node.orders.edges[order].node.review.textures))
+          aux7=Math.round(aux7+this.valnum(this.allReviews.products.edges[product].node.orders.edges[order].node.review.cookingPoint))
+        conttam=conttam+1;
+        }
+
+      }
+      //promedios
+      this.auxcont=conttam;
+      aux1=Math.round( aux1/conttam);
+      this.aux1=aux1;
+      aux2=Math.round(aux2/conttam);
+      this.aux2=aux2;
+      aux3=Math.round(aux3/conttam);
+      this.aux3=aux3;
+      aux4=Math.round(aux4/conttam);
+      this.aux4=aux4;
+      aux5=Math.round(aux5/conttam);
+      this.aux5=aux5;
+      aux6=Math.round(aux6/conttam);
+      this.aux6=aux6;
+      aux7=Math.round(aux7/conttam);
+      this.aux7=aux7;
+      this.comments=comments;
+      this.users=users;
+      this.valoration= ((aux1+aux2+aux3+aux4+aux5+aux7)/7).toFixed(1);
+
+    },
     mostrar(){
           let diasSemana = JSON.parse(this.enterprise.businessHours);
-          //console.log(diasSemana);
           let dias = ["domingo","lunes","martes","miercoles","jueves","viernes","sabado"];
           let hoy = new Date();
           let dia = dias[hoy.getDay()];
-          //let hora = hoy.getHours();
-          //console.log(hora);
-          //let horassss = parseInt(diasSemana.jueves.horaI);
-          //this.variable = dias[hoy.getDay()];
 
           if (dia == "lunes") {
             if (diasSemana.lunes.horaI != "") {
                 this.variable = "Abierto: "+diasSemana.lunes.horaI +" Cierre: "+diasSemana.lunes.horaF;
                 //this.validarRango = true;
             }
-            
+
           }else if (dia == "martes") {
             if (diasSemana.martes.horaI != "") {
                 this.variable = "Abierto: "+diasSemana.martes.horaI +" Cierre: "+diasSemana.martes.horaF;
             }
-            
+
           }
           else if (dia == "miercoles") {
             if (diasSemana.miercoles.horaI != "") {
                 this.variable = "Abierto: "+diasSemana.miercoles.horaI +" Cierre: "+diasSemana.miercoles.horaF;
             }
-            
+
           }
           else if (dia == "jueves") {
             if (diasSemana.jueves.horaI != "") {
                 this.variable = "Abierto: "+diasSemana.jueves.horaI
                  +" Cierre: "+diasSemana.jueves.horaF;
             }
-            
+
           }
           else if (dia == "viernes") {
             if (diasSemana.viernes.horaI != "") {
                 this.variable = "Abierto: "+diasSemana.viernes.horaI +" Cierre: "+diasSemana.viernes.horaF;
             }
-            
+
           }
           else if (dia == "sabado") {
             if (diasSemana.sabado.horaI != "") {
                 this.variable = "Abierto: "+diasSemana.sabado.horaI +" Cierre: "+diasSemana.sabado.horaF;
             }
-            
+
           }
           else if (dia == "domingo") {
             if (diasSemana.domingo.horaI != "") {
                 this.variable = "Abierto: "+diasSemana.domingo.horaI +" Cierre: "+diasSemana.domingo.horaF;
             }
-            
+
           }
     },
     apreciation() {
@@ -152,7 +220,7 @@ export default {
       }
       this.valoration = average / this.counter;
       //this.auxsize=this.itemsRatings.length;
-      
+
     },
     aux(text) {
       var valor = 1;
@@ -164,7 +232,7 @@ export default {
       return valor;
     },
   },
-  
+
 };
 </script>
 <style scoped>

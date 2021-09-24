@@ -171,7 +171,7 @@ export default {
     },
     onSuccess(googleUser) {
       // This only gets the user information: id, name, imageUrl and email
-      this.email = googleUser.getBasicProfile().Ht;
+      this.email =  googleUser.getBasicProfile().getEmail();
       this.google = true;
       this.password = "";
       this.startSesion();
@@ -240,10 +240,13 @@ export default {
                 );
               });
             } else {
-              this.error_msg = "El usuario esta inactivo",
+              this.error_msg = "El usuario esta inactivo";
+              if (response.data.allUsers.edges[0].node.type == 'CLIENT') {
+                this.error_inactive = true;
+                this.show_charging = false;
+              }
               this.error = true;
-              this.error_inactive = true;
-              this.show_charging = false;
+
             }
           }
         });

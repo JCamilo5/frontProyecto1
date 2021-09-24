@@ -8,7 +8,7 @@
             type="search"
             placeholder="Buscar..."
             aria-label="Search"
-            v-model="enterprise"
+            v-model="searchString"
           />
           <button
             class="btn btn-outline-success my-2 my-sm-0 ion-ios-search"
@@ -27,37 +27,39 @@
         <ConnectionErrorGraphql />
       </div>
       <!--PAGINACIÓN-->
-        <paginate ref="paginator" name="Enterprises" :list="Enterprises" :per="3">
-          <div class="row">
-            <div
-              class="col-xl-4 col-md-6 col-sm-12"
-              v-for="(enterprise, id) in paginated('Enterprises')"
-                :key="enterprise.id"
-                :item="enterprise"
-                :id="id"
-                :checkbox_use="true"
-                v-show="enterprise.node.status"
-            > 
-              <template>
-                <EnterpriseCard :enterprise="enterprise.node" />
-                <br />
-              </template>
-            </div>
+      <paginate ref="paginator" name="Enterprises" :list="Enterprises" :per="3">
+        <div class="row">
+          <div
+            class="col-xl-4 col-md-6 col-sm-12"
+            v-for="(enterprise, id) in paginated('Enterprises')"
+            :key="enterprise.id"
+            :item="enterprise"
+            :id="id"
+            :checkbox_use="true"
+            v-show="enterprise.node.status"
+          >
+            <template>
+              <EnterpriseCard :enterprise="enterprise.node" :key="enterprise.node.id"/>
+              <br />
+            </template>
           </div>
-        </paginate>
-      </div>
-      
-      <div class="div-paginate">
-        <paginate-links
-          for="Enterprises"
-          :classes="{ ul: 'pagination' }"
-          :show-step-links="true"
-        ></paginate-links>
-      </div>
-            <div class="div-paginate">
-        <span v-if="$refs.paginator">
-          Viendo {{ $refs.paginator.pageItemsCount }} resultados
-        </span>
+          </div>
+      </paginate>
+
+
+    </div>
+
+    <div class="div-paginate">
+      <paginate-links
+        for="Enterprises"
+        :classes="{ ul: 'pagination' }"
+        :show-step-links="true"
+      ></paginate-links>
+    </div>
+    <div class="div-paginate">
+      <span v-if="$refs.paginator">
+        Viendo {{ $refs.paginator.pageItemsCount }} resultados
+      </span>
     </div>
   </div>
 </template>
@@ -76,15 +78,17 @@ export default {
   },
   data() {
     return {
-      enterprise: "",
+      searchString: "",
       // Variable que recibe los resultados
       // de la consulta definida en la sección apollo
       allEnterprises: Object,
+      allProducts: Object,
       currentPage: 1,
       page: 1,
       perpage: 3,
       Enterprises: [],
-      paginate: ["Enterprises"],
+      Products: [],
+      paginate: ["Enterprises","Products"],
       // Variable que recibe el error de la consulta
       error: null,
     };
@@ -97,7 +101,7 @@ export default {
       })
       .then((response) => {
         this.Enterprises = response.data.allEnterprises.edges;
-        console.log(this.Enterprises);
+        this.allEnterprises = response.data.allEnterprises.edges;
         //this.pages = response.data.allEnterprises.edges.length;
       });
   },
@@ -119,13 +123,27 @@ export default {
           query: require("@/graphql/enterprise/findEnterprises.gql"),
           // Define las variables
           variables: {
-            name_Icontains: this.enterprise,
+            name_Icontains: this.searchString,
           },
         })
         // El método query devuelve una promesa
         // que puede usarse para agregar más logica
         .then((response) => {
           this.Enterprises = response.data.allEnterprises.edges;
+          var productsFind = this.allProducts.edges.filter((element) =>
+                element.node.name.includes(this.searchString.toLowerCase()));
+          for (let index = 0; index < productsFind.length; index++) {
+            var id =  productsFind[index].node.enterprise.id;
+            var result = 1;
+            //result =
+            result = (this.Enterprises.find((element) =>
+                element.node.id == id ));
+            if (result == 1 || result == undefined) {
+              var enterprise = this.allEnterprises.find((element) =>
+                element.node.id == id);
+              this.Enterprises.push(enterprise)
+            }
+          }
           //this.pages = response.data.allEnterprises.edges.length;
           if (response.data.allEnterprises.edges[0] == null) {
             this.makeToast(
@@ -135,8 +153,18 @@ export default {
               3000
             );
           }
-          this.enterprise = "";
+          this.searchString = "";
         });
+    },
+  },
+  apollo: {
+    allProducts: {
+      // Consulta
+      query: require("@/graphql/product/allProducts.gql"),
+      // Asigna el error a la variable definida en data
+      error(error) {
+        this.error = JSON.stringify(error.message);
+      },
     },
   },
 };

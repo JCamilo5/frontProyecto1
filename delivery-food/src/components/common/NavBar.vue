@@ -203,7 +203,7 @@ export default {
     onSuccess() {
       this.ok = false;
       localStorage.clear();
-      this.$router.push({ name: "/" });
+      this.$router.push({ name: "catalogSearch" });
     },
     removeClient() {
       if (confirm("¿Seguro que desea darse de baja?", false)) {
@@ -219,7 +219,7 @@ export default {
           // El método mutate devuelve una promesa
           // que puede usarse para agregar más logica
           .then((response) => {
-            console.log("actualización de empresa:", response.data);
+            console.log("Desactivado", response.data.updateClient.client.isActive);
             this.makeToast(
               "danger",
               "Desactivado",
@@ -228,7 +228,7 @@ export default {
             );
             this.ok = false;
             localStorage.clear();
-            this.$router.push({ name: "/" });
+            this.$router.push({ name: "catalogSearch" });
           });
       }
     },

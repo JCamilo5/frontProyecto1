@@ -237,9 +237,9 @@ export default {
       }
     },
     onSuccess(googleUser) {
-      this.names = googleUser.getBasicProfile().zU;
-      this.lastNames = googleUser.getBasicProfile().zS;
-      this.email = googleUser.getBasicProfile().Ht;
+      this.names = googleUser.getBasicProfile().getGivenName();
+      this.lastNames = googleUser.getBasicProfile().getFamilyName();
+      this.email = googleUser.getBasicProfile().getEmail();
       this.google = true;
       this.is_alternative = true;
     },

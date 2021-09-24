@@ -12,7 +12,7 @@
     <div v-else-if="error" class="d-flex justify-content-center">
       <ConnectionErrorGraphql />
     </div>
-    
+
     <div class="row">
       <div class="col">
         <div>
@@ -23,7 +23,7 @@
       </div>
       <div v-if="enterprise!=null" class="col">
         <template >
-          <EnterpriseCard :enterprise="enterprise" />
+          <EnterpriseCard :enterprise="enterprise" :key="enterprise.id"/>
           <br />
         </template>
       </div>
@@ -171,11 +171,10 @@ export default {
       });
     },
     showAllEnterpise(enterprise) {
-      console.log("Hola",enterprise.name)
       this.enterprise= enterprise;
     },
     showEnterpriseLocation(lat, lon, enterprise) {
-      
+
       window.enterprise = enterprise;
       const contentString =
         `<b>` +
