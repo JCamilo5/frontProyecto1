@@ -122,7 +122,6 @@ export default {
   },
   methods: {
     ral_Location(value){
-      console.log("valor"+ value)
       this.location = value;
     },
     makeToast(variant = null, title, info, time) {

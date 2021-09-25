@@ -1,6 +1,6 @@
 <template>
     <div class="wrapper fadeInDown align-self-lg-center">
-        <h1>Actualizacion de datos</h1>
+        <h1>Actualización de datos</h1>
           <div class="card-body container align-self-center">
               <div class="form-group">
                   <label for="validationName"
@@ -33,28 +33,28 @@
                       v-model="telephone"
                       required
                   />
-                  <!-- geolocalizacionnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnnn -->
+                  <!-- geolocalizacion-->
                   <label for="validationLocation"
                       >Localización<span class="text-danger">*</span></label
                   >
                   <Geolocation v-on:value="newLocation" showmap="True" />
                   <br>
                   <!-- geolocalizacion  -->
-                  <button 
+                  <button
                       @click="editContact()"
                       type="submit"
-                      class="btn btn-outline-primary"                    
+                      class="btn btn-outline-primary"
                       >
                       Guardar información
                   </button>
-                                      
+
                   <button
                       :disabled="disable()"
                       type="button"
                       class="btn btn-primary"
                       data-toggle="modal"
                       data-target="#exampleModalCenter"
-                      >                    
+                      >
                       Cambiar Contraseña
                   </button>
               </div>
@@ -68,7 +68,7 @@
             aria-labelledby="exampleModalCenterTitle"
             aria-hidden="true"
         >
-            <div class="modal-dialog modal-dialog-centered" role="document">    
+            <div class="modal-dialog modal-dialog-centered" role="document">
                 <div class="modal-content">
                     <div class="modal-header">
                         <h5 class="modal-title" id="exampleModalLongTitle">
@@ -141,11 +141,11 @@
                                     </div>
                                 </div>
                                 <button
-                                    @click="checkPassword()"                                    
+                                    @click="checkPassword()"
                                     type="button"
                                     data-dismiss="modal"
                                     class="btn btn-primary"
-                                    
+
                                 >
                                     Guardar cambios
                                 </button>
@@ -165,7 +165,6 @@
             </div>
         </div>
     </div>
-  
 </template>
 <script>
 import Geolocation from "@/components/geolocation/Geolocation.vue"
@@ -220,7 +219,6 @@ export default {
   },
   methods: {
     newLocation(value){
-      console.log("valor"+ value)
       this.location = value;
     },
     makeToast(variant = null, title, info, time) {

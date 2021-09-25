@@ -18,7 +18,7 @@
         Horario de atención:
       </p>
       <p class="card-text">
-          {{variable}}
+          {{varShedule}}
       </p>
 
       <button v-show="ok" type="button" class="btn btn-success btn-sm mr-4">
@@ -37,8 +37,7 @@ export default {
       allReviews: Object,
       valoration: 0,
       counter: 0,
-      variable : "",
-      validarRango: "",
+      varShedule : "",
       aux1:0,
       aux2:0,
       aux3:0,
@@ -147,44 +146,43 @@ export default {
 
           if (dia == "lunes") {
             if (diasSemana.lunes.horaI != "") {
-                this.variable = "Abierto: "+diasSemana.lunes.horaI +" Cierre: "+diasSemana.lunes.horaF;
-                //this.validarRango = true;
+                this.varShedule = "Abierto: "+diasSemana.lunes.horaI +" Cierre: "+diasSemana.lunes.horaF;
             }
 
           }else if (dia == "martes") {
             if (diasSemana.martes.horaI != "") {
-                this.variable = "Abierto: "+diasSemana.martes.horaI +" Cierre: "+diasSemana.martes.horaF;
+                this.varShedule = "Abierto: "+diasSemana.martes.horaI +" Cierre: "+diasSemana.martes.horaF;
             }
 
           }
           else if (dia == "miercoles") {
             if (diasSemana.miercoles.horaI != "") {
-                this.variable = "Abierto: "+diasSemana.miercoles.horaI +" Cierre: "+diasSemana.miercoles.horaF;
+                this.varShedule = "Abierto: "+diasSemana.miercoles.horaI +" Cierre: "+diasSemana.miercoles.horaF;
             }
 
           }
           else if (dia == "jueves") {
             if (diasSemana.jueves.horaI != "") {
-                this.variable = "Abierto: "+diasSemana.jueves.horaI
+                this.varShedule = "Abierto: "+diasSemana.jueves.horaI
                  +" Cierre: "+diasSemana.jueves.horaF;
             }
 
           }
           else if (dia == "viernes") {
             if (diasSemana.viernes.horaI != "") {
-                this.variable = "Abierto: "+diasSemana.viernes.horaI +" Cierre: "+diasSemana.viernes.horaF;
+                this.varShedule = "Abierto: "+diasSemana.viernes.horaI +" Cierre: "+diasSemana.viernes.horaF;
             }
 
           }
           else if (dia == "sabado") {
             if (diasSemana.sabado.horaI != "") {
-                this.variable = "Abierto: "+diasSemana.sabado.horaI +" Cierre: "+diasSemana.sabado.horaF;
+                this.varShedule = "Abierto: "+diasSemana.sabado.horaI +" Cierre: "+diasSemana.sabado.horaF;
             }
 
           }
           else if (dia == "domingo") {
             if (diasSemana.domingo.horaI != "") {
-                this.variable = "Abierto: "+diasSemana.domingo.horaI +" Cierre: "+diasSemana.domingo.horaF;
+                this.varShedule = "Abierto: "+diasSemana.domingo.horaI +" Cierre: "+diasSemana.domingo.horaF;
             }
 
           }
