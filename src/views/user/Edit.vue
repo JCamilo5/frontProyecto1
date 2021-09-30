@@ -261,6 +261,7 @@ export default {
             //Llenar cache
             let user = JSON.parse(localStorage.getItem("user"));
             user.names = this.name;
+            user.location = this.location;
             localStorage.setItem("user", JSON.stringify(user));
             this.$router.push({ name: "catalogSearch" }).then(() => {
               this.makeToast(

@@ -26,7 +26,7 @@
               </a>
             </li>
             <li class="nav-item mr-3" v-show="ok">
-              <a class="nav-link text-light font-weight-bold" href="/geolocationSearch">Busqueda geolocalización</a>
+              <a class="nav-link text-light font-weight-bold" href="/geolocation-search">Busqueda geolocalización</a>
             </li>
             <li class="nav-item mr-3" v-show="ok">
               <a class="nav-link text-light font-weight-bold" href="#">Servicios</a>

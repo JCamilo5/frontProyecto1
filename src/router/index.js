@@ -25,7 +25,7 @@ const routes = [
     component: () => import("@/views/searches/catalogSearch.vue"),
   },
   {
-    path: "/geolocationSearch",
+    path: "/geolocation-search",
     name: "geolocationSearch",
     component: () => import("@/views/searches/geolocationSearch.vue"),
   },
