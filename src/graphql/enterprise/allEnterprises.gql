@@ -1,0 +1,15 @@
+{
+  allEnterprises {
+    edges {
+      node {
+        id
+        name
+        location
+        businessHours
+        created
+        status
+        historicalReview
+      }
+    }
+  }
+}

@@ -1,8 +1,0 @@
-query enterprise($id: ID!) {
-  enterprise(id: $id) {
-    id
-    name
-    location
-    status
-  }
-}
