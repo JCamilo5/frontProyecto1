@@ -78,12 +78,12 @@ const routes = [
     path: "/report",
     name: "Report",
     component: () => import("@/views/deliveries/Report.vue"),
-    props: { deliveryId: "RGVsaXZlcnlOb2RlOjM=", enterprise: "Dom Burger" },
+    props: { deliveryId: "T3JkZXJOb2RlOjE=", enterprise: "Dom Burger" },
   },
   {
-    path: "/countdown",
-    name: "Countdown",
-    component: () => import("@/views/deliveries/Countdown.vue"),
+    path: "/my-deliveries",
+    name: "DeliveryDone",
+    component: () => import("@/views/couriers/DeliveryDone.vue"),
   },
   {
     path: "/password",
@@ -130,7 +130,13 @@ const routes = [
     name: "AddRating",
     component: () =>
         import("@/views/ratings-comments/AddRating.vue"),
-},
+      },
+      {
+        path: "/report-Enterprise/:id",
+        name: "reportEnterprise",
+        component: () =>
+          import("@/views/enterprise/Report.vue"),
+    },
 ];
 
 const router = new VueRouter({
